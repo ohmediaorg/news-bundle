@@ -1,0 +1,20 @@
+{
+    "name": "ohmediaorg/news-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony NewsBundle",
+    "keywords": ["News"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Justin Hoffman",
+            "email": "justin@ohmedia.ca"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "symfony/framework-bundle": "6.4.*"
+    },
+    "autoload": {
+        "psr-4": { "OHMedia\\NewsBundle\\": "src/" }
+    }
+}
