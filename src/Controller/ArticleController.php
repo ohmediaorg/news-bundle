@@ -34,7 +34,7 @@ class ArticleController extends AbstractController
         $qb = $articleRepository->createQueryBuilder('a');
         $qb->orderBy('a.id', 'desc');
 
-        return $this->render('@backend/article/article_index.html.twig', [
+        return $this->render('@OHMediaNews/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
             'new_article' => $newArticle,
             'attributes' => $this->getAttributes(),
@@ -68,7 +68,7 @@ class ArticleController extends AbstractController
             return $this->redirectToRoute('article_index');
         }
 
-        return $this->render('@backend/article/article_create.html.twig', [
+        return $this->render('@OHMediaNews/article/article_create.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
@@ -83,7 +83,7 @@ class ArticleController extends AbstractController
             'You cannot view this article.'
         );
 
-        return $this->render('@backend/article/article_view.html.twig', [
+        return $this->render('@OHMediaNews/article/article_view.html.twig', [
             'article' => $article,
             'attributes' => $this->getAttributes(),
         ]);
@@ -117,7 +117,7 @@ class ArticleController extends AbstractController
             ]);
         }
 
-        return $this->render('@backend/article/article_edit.html.twig', [
+        return $this->render('@OHMediaNews/article/article_edit.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
@@ -149,7 +149,7 @@ class ArticleController extends AbstractController
             return $this->redirectToRoute('article_index');
         }
 
-        return $this->render('@backend/article/article_delete.html.twig', [
+        return $this->render('@OHMediaNews/article/article_delete.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
