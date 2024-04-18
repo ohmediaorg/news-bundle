@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace OHMedia\NewsBundle\Entity;
 
-use App\Repository\ArticleRepository;
+use OHMedia\NewsBundle\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use OHMedia\SecurityBundle\Entity\Traits\BlameableTrait;
 

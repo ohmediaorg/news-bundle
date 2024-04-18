@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Security\Voter;
+namespace OHMedia\NewsBundle\Security\Voter;
 
-use App\Entity\Article;
+use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\SecurityBundle\Entity\User;
 use OHMedia\SecurityBundle\Security\Voter\AbstractEntityVoter;
 

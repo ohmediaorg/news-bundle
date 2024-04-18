@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\EntityChoice;
+namespace OHMedia\NewsBundle\Service\EntityChoice;
 
-use App\Entity\Article;
+use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\SecurityBundle\Service\EntityChoiceInterface;
 
 class ArticleEntityChoice implements EntityChoiceInterface

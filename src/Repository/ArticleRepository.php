@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace OHMedia\NewsBundle\Repository;
 
-use App\Entity\Article;
+use OHMedia\NewsBundle\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
