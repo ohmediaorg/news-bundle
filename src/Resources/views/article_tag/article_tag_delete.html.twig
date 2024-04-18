@@ -1,0 +1,11 @@
+{% extends '@OHMediaBackend/form.html.twig' %}
+
+{% set form_title = 'Delete ' ~ article_tag %}
+
+{% block breadcrumbs %}
+{{ bootstrap_breadcrumbs(
+  bootstrap_breadcrumb(bootstrap_icon('tag') ~ ' Article Tags', 'article_tag_index'),
+  bootstrap_breadcrumb(article_tag, 'article_tag_view', {id: article_tag.id}),
+  bootstrap_breadcrumb('Delete'),
+) }}
+{% endblock %}
