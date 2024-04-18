@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller\Backend;
+namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Form\ArticleType;

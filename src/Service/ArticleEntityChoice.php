@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Service\EntityChoice;
+namespace OHMedia\NewsBundle\Service;
 
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\SecurityBundle\Service\EntityChoiceInterface;
