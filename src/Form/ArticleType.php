@@ -3,11 +3,10 @@
 namespace OHMedia\NewsBundle\Form;
 
 use OHMedia\NewsBundle\Entity\Article;
-// use Doctrine\ORM\EntityRepository;
 // use Doctrine\ORM\QueryBuilder;
-// use OHMedia\FileBundle\Form\Type\FileEntityType;
-// use OHMedia\MetaBundle\Form\Type\MetaEntityType;
-// use OHMedia\TimezoneBundle\Form\Type\DateTimeType;
+use OHMedia\FileBundle\Form\Type\FileEntityType;
+use OHMedia\MetaBundle\Form\Type\MetaEntityType;
+use OHMedia\TimezoneBundle\Form\Type\DateTimeType;
 // use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 // use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,7 +16,8 @@ use Symfony\Component\Form\AbstractType;
 // use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 // use Symfony\Component\Form\Extension\Core\Type\NumberType;
 // use Symfony\Component\Form\Extension\Core\Type\TelType;
-// use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use OHMedia\WysiwygBundle\Form\Type\WysiwygType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 // use Symfony\Component\Form\Extension\Core\Type\TextType;
 // use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +29,39 @@ class ArticleType extends AbstractType
     {
         $article = $options['data'];
 
+        $builder->add('title');
+
+        //TODO show this?
+        $builder->add('slug', null, [
+            'required' => false,
+            'help' => 'Leave blank to auto-generate',
+            'empty_data' => '',
+        ]);
+
+        $builder->add('author', null, [
+            'required' => false,
+        ]);
+
+        $builder->add('snippet', TextareaType::class, [
+            'required' => false,
+            'attr' => [
+                'rows' => 5,
+            ],
+        ]);
+
+        $builder->add('content', WysiwygType::class);
+
+         $builder->add('image', FileEntityType::class, [
+            'image' => true,
+            'data' => $article->getImage(),
+        ]);
+
+        $builder->add('meta', MetaEntityType::class, [
+            'data' => $article->getMeta(),
+        ]);
+
+        $builder->add('publish_datetime', DateTimeType::class);
+
         // TIP: these all do the same thing
         // $builder->add('name');
         // $builder->add('name', null);
@@ -36,8 +69,7 @@ class ArticleType extends AbstractType
 
         // always use the file-bundle for files
         // for some reason it is necessary to specify 'data'
-        // when usually 'mapped' => true (default) is enough
-        // $builder->add('file', FileEntityType::class, [
+        // when usually 'mapped' => true (default) is enappuilder->add('file', FileEntityType::class, [
         //     'data' => $article->getFile(),
         // ]);
         // $builder->add('image', FileEntityType::class, [
