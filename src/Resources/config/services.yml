@@ -1,0 +1,4 @@
+services:
+OHMedia\OHMediaNewsBundle\Repository\ArticleRepository:
+  autowire: true
+  tags: ['doctrine.repository_service']
