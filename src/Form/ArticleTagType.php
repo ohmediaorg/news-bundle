@@ -29,59 +29,14 @@ class ArticleTagType extends AbstractType
     {
         $articleTag = $options['data'];
 
-        // TIP: these all do the same thing
-        // $builder->add('name');
-        // $builder->add('name', null);
-        // $builder->add('name', TextType::class);
+        $builder->add('name');
 
-        // always use the file-bundle for files
-        // for some reason it is necessary to specify 'data'
-        // when usually 'mapped' => true (default) is enough
-        // $builder->add('file', FileEntityType::class, [
-        //     'data' => $articleTag->getFile(),
-        // ]);
-        // $builder->add('image', FileEntityType::class, [
-        //     'image' => true,
-        //     'data' => $articleTag->getFile(),
-        // ]);
-
-        // always use the datetime-bundle to ensure timezones are good
-        // $builder->add('start_datetime', DateTimeType::class);
-        // $builder->add('end_datetime', DateTimeType::class);
-
-        // if you have a checkbox for a toggle, make sure it is not required
-        // $builder->add('is_featured', CheckboxType::class, [
-        //     'required' => false,
-        // ]);
-
-        // <select>
-        // $builder->add('selection', ChoiceType::class);
-
-        // <select multiple>
-        // $builder->add('selection', ChoiceType::class, [
-        //     'multiple' => true,
-        // ]);
-
-        // array of <input type="radio">
-        // $builder->add('selection', ChoiceType::class, [
-        //     'expanded' => true,
-        // ]);
-
-        // array of <input type="checkbox">
-        // $builder->add('selection', ChoiceType::class, [
-        //     'expanded' => true,
-        //     'multiple' => true,
-        // ]);
-
-        // for a OneToOne or ManyToOne relationship selection
-        // $builder->add('owner', EntityType::class, [
-        //     'class' => User::class,
-        //     'query_builder' => function (EntityRepository $er): QueryBuilder {
-        //         return $er->createQueryBuilder('u')
-        //             ->orderBy('u.email', 'ASC');
-        //     },
-        //     'choice_label' => 'email',
-        // ]);
+        //TODO show this?
+        $builder->add('slug', null, [
+            'required' => false,
+            'help' => 'Leave blank to auto-generate',
+            'empty_data' => '',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

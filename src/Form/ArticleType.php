@@ -61,59 +61,6 @@ class ArticleType extends AbstractType
         ]);
 
         $builder->add('publish_datetime', DateTimeType::class);
-
-        // TIP: these all do the same thing
-        // $builder->add('name');
-        // $builder->add('name', null);
-        // $builder->add('name', TextType::class);
-
-        // always use the file-bundle for files
-        // for some reason it is necessary to specify 'data'
-        // when usually 'mapped' => true (default) is enappuilder->add('file', FileEntityType::class, [
-        //     'data' => $article->getFile(),
-        // ]);
-        // $builder->add('image', FileEntityType::class, [
-        //     'image' => true,
-        //     'data' => $article->getFile(),
-        // ]);
-
-        // always use the datetime-bundle to ensure timezones are good
-        // $builder->add('start_datetime', DateTimeType::class);
-        // $builder->add('end_datetime', DateTimeType::class);
-
-        // if you have a checkbox for a toggle, make sure it is not required
-        // $builder->add('is_featured', CheckboxType::class, [
-        //     'required' => false,
-        // ]);
-
-        // <select>
-        // $builder->add('selection', ChoiceType::class);
-
-        // <select multiple>
-        // $builder->add('selection', ChoiceType::class, [
-        //     'multiple' => true,
-        // ]);
-
-        // array of <input type="radio">
-        // $builder->add('selection', ChoiceType::class, [
-        //     'expanded' => true,
-        // ]);
-
-        // array of <input type="checkbox">
-        // $builder->add('selection', ChoiceType::class, [
-        //     'expanded' => true,
-        //     'multiple' => true,
-        // ]);
-
-        // for a OneToOne or ManyToOne relationship selection
-        // $builder->add('owner', EntityType::class, [
-        //     'class' => User::class,
-        //     'query_builder' => function (EntityRepository $er): QueryBuilder {
-        //         return $er->createQueryBuilder('u')
-        //             ->orderBy('u.email', 'ASC');
-        //     },
-        //     'choice_label' => 'email',
-        // ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
