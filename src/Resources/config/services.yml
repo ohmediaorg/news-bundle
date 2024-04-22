@@ -31,9 +31,5 @@ services:
     autowire: true
     tags: ['security.voter']
 
-  OHMedia\NewsBundle\Service\ArticleTagNavItemProvider:
-    autowire: true
-    tags: ['oh_media_backend.nav_item_provider']
-
   OHMedia\NewsBundle\Service\ArticleTagEntityChoice:
     tags: ['oh_media_security.entity_choice']
