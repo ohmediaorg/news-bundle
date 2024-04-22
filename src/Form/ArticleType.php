@@ -3,11 +3,12 @@
 namespace OHMedia\NewsBundle\Form;
 
 use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Entity\ArticleTag;
 // use Doctrine\ORM\QueryBuilder;
 use OHMedia\FileBundle\Form\Type\FileEntityType;
 use OHMedia\MetaBundle\Form\Type\MetaEntityType;
 use OHMedia\TimezoneBundle\Form\Type\DateTimeType;
-// use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 // use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 // use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -51,9 +52,17 @@ class ArticleType extends AbstractType
 
         $builder->add('content', WysiwygType::class);
 
-         $builder->add('image', FileEntityType::class, [
-            'image' => true,
-            'data' => $article->getImage(),
+        $builder->add('image', FileEntityType::class, [
+           'image' => true,
+           'data' => $article->getImage(),
+        ]);
+        // TODO label
+        $builder->add('ArticleTag', EntityType::class, [
+            'class' => ArticleTag::class,
+            // 'label' => 'Tags',
+            // 'choice_label' => 'tag',
+            'multiple' => true,
+            'expanded' => true,
         ]);
 
         $builder->add('meta', MetaEntityType::class, [

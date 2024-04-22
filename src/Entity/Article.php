@@ -2,6 +2,8 @@
 
 namespace OHMedia\NewsBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use OHMedia\FileBundle\Entity\File;
 use OHMedia\MetaBundle\Entity\Meta;
@@ -44,6 +46,17 @@ class Article
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $publish_datetime = null;
+
+    /**
+     * @var Collection<int, ArticleTag>
+     */
+    #[ORM\ManyToMany(targetEntity: ArticleTag::class)]
+    private Collection $ArticleTag;
+
+    public function __construct()
+    {
+        $this->ArticleTag = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -147,6 +160,30 @@ class Article
     public function setPublishDatetime(\DateTimeInterface $publish_datetime): static
     {
         $this->publish_datetime = $publish_datetime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArticleTag>
+     */
+    public function getArticleTag(): Collection
+    {
+        return $this->ArticleTag;
+    }
+
+    public function addArticleTag(ArticleTag $articleTag): static
+    {
+        if (!$this->ArticleTag->contains($articleTag)) {
+            $this->ArticleTag->add($articleTag);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleTag(ArticleTag $articleTag): static
+    {
+        $this->ArticleTag->removeElement($articleTag);
 
         return $this;
     }
