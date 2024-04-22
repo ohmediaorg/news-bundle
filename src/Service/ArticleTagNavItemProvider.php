@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\Backend\Nav;
+namespace OHMedia\NewsBundle\Service;
 
-use App\Entity\ArticleTag;
-use App\Security\Voter\ArticleTagVoter;
+use OHMedia\NewsBundle\Entity\ArticleTag;
+use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use OHMedia\BackendBundle\Service\AbstractNavItemProvider;
 use OHMedia\BootstrapBundle\Component\Nav\NavItemInterface;
 use OHMedia\BootstrapBundle\Component\Nav\NavLink;

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller\Backend;
+namespace OHMedia\NewsBundle\Controller;
 
-use App\Entity\ArticleTag;
-use App\Form\ArticleTagType;
-use App\Repository\ArticleTagRepository;
-use App\Security\Voter\ArticleTagVoter;
+use OHMedia\NewsBundle\Entity\ArticleTag;
+use OHMedia\NewsBundle\Form\ArticleTagType;
+use OHMedia\NewsBundle\Repository\ArticleTagRepository;
+use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\SecurityBundle\Form\DeleteType;

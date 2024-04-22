@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace OHMedia\NewsBundle\Form;
 
-use App\Entity\ArticleTag;
+use OHMedia\NewsBundle\Entity\ArticleTag;
 // use Doctrine\ORM\EntityRepository;
 // use Doctrine\ORM\QueryBuilder;
 // use OHMedia\FileBundle\Form\Type\FileEntityType;
