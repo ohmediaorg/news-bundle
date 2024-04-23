@@ -30,14 +30,23 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Article</th>
-          <th></th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Publish Date</th>
+          <th>Date Created</th>
+          <th>Date Modified</th>
         </tr>
       </thead>
       <tbody>
         {% for article in pagination.results %}
         <tr>
-          <td>{{ article }}</td>
+          <td>{{ article.title }}</td>
+          <td>{{ article.author }}</td>
+          <td>STATUS TODO</td>
+          <td>{{ article.getPublishDatetime|datetime }}</td>
+          <td>{{ article.getCreatedAt|datetime }}</td>
+          <td>{{ article.getUpdatedAt|datetime }}</td>
           <td>
             {% if is_granted(attributes.edit, article) %}
             <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_edit', {id: article.id}) }}" title="Edit">

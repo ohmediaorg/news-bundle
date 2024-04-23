@@ -156,6 +156,16 @@ class Article
     {
         return $this->publish_datetime;
     }
+// TODO check that I'm doing this properly
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
 
     public function setPublishDatetime(\DateTimeInterface $publish_datetime): static
     {
