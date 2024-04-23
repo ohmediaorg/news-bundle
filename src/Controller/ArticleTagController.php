@@ -74,21 +74,6 @@ class ArticleTagController extends AbstractController
         ]);
     }
 
-    #[Route('/article-tag/{id}', name: 'article_tag_view', methods: ['GET'])]
-    public function view(ArticleTag $articleTag): Response
-    {
-        $this->denyAccessUnlessGranted(
-            ArticleTagVoter::VIEW,
-            $articleTag,
-            'You cannot view this article tag.'
-        );
-
-        return $this->render('@OHMediaNews/article_tag/article_tag_view.html.twig', [
-            'article_tag' => $articleTag,
-            'attributes' => $this->getAttributes(),
-        ]);
-    }
-
     #[Route('/article-tag/{id}/edit', name: 'article_tag_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -112,7 +97,7 @@ class ArticleTagController extends AbstractController
 
             $this->addFlash('notice', 'The article tag was updated successfully.');
 
-            return $this->redirectToRoute('article_tag_view', [
+            return $this->redirectToRoute('article_tag_index', [
                 'id' => $articleTag->getId(),
             ]);
         }
