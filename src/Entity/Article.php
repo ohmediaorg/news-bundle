@@ -51,11 +51,11 @@ class Article
      * @var Collection<int, ArticleTag>
      */
     #[ORM\ManyToMany(targetEntity: ArticleTag::class)]
-    private Collection $ArticleTag;
+    private Collection $tags;
 
     public function __construct()
     {
-        $this->ArticleTag = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -167,23 +167,23 @@ class Article
     /**
      * @return Collection<int, ArticleTag>
      */
-    public function getArticleTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->ArticleTag;
+        return $this->tags;
     }
 
-    public function addArticleTag(ArticleTag $articleTag): static
+    public function addTag(ArticleTag $tag): static
     {
-        if (!$this->ArticleTag->contains($articleTag)) {
-            $this->ArticleTag->add($articleTag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
         }
 
         return $this;
     }
 
-    public function removeArticleTag(ArticleTag $articleTag): static
+    public function removeTag(ArticleTag $tag): static
     {
-        $this->ArticleTag->removeElement($articleTag);
+        $this->tags->removeElement($tag);
 
         return $this;
     }
