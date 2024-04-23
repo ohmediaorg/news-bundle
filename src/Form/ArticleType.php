@@ -56,11 +56,9 @@ class ArticleType extends AbstractType
            'image' => true,
            'data' => $article->getImage(),
         ]);
-        // TODO label
-        $builder->add('ArticleTag', EntityType::class, [
+
+        $builder->add('tags', EntityType::class, [
             'class' => ArticleTag::class,
-            // 'label' => 'Tags',
-            // 'choice_label' => 'tag',
             'multiple' => true,
             'expanded' => true,
         ]);
