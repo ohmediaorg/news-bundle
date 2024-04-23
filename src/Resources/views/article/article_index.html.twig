@@ -39,12 +39,6 @@
         <tr>
           <td>{{ article }}</td>
           <td>
-            {% if is_granted(attributes.view, article) %}
-            <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_view', {id: article.id}) }}" title="View">
-              {{ bootstrap_icon('eye-fill') }}
-              <span class="visually-hidden">View</span>
-            </a>
-            {% endif %}
             {% if is_granted(attributes.edit, article) %}
             <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_edit', {id: article.id}) }}" title="Edit">
               {{ bootstrap_icon('pen-fill') }}

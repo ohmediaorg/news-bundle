@@ -74,21 +74,6 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/article/{id}', name: 'article_view', methods: ['GET'])]
-    public function view(Article $article): Response
-    {
-        $this->denyAccessUnlessGranted(
-            ArticleVoter::VIEW,
-            $article,
-            'You cannot view this article.'
-        );
-
-        return $this->render('@OHMediaNews/article/article_view.html.twig', [
-            'article' => $article,
-            'attributes' => $this->getAttributes(),
-        ]);
-    }
-
     #[Route('/article/{id}/edit', name: 'article_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -112,7 +97,7 @@ class ArticleController extends AbstractController
 
             $this->addFlash('notice', 'The article was updated successfully.');
 
-            return $this->redirectToRoute('article_view', [
+            return $this->redirectToRoute('article_index', [
                 'id' => $article->getId(),
             ]);
         }

@@ -5,7 +5,6 @@
 {% block breadcrumbs %}
 {{ bootstrap_breadcrumbs(
   bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' Articles', 'article_index'),
-  bootstrap_breadcrumb(article, 'article_view', {id: article.id}),
   bootstrap_breadcrumb('Edit'),
 ) }}
 {% endblock %}
