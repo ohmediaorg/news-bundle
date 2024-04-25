@@ -30,6 +30,3 @@ services:
   OHMedia\NewsBundle\Security\Voter\ArticleTagVoter:
     autowire: true
     tags: ['security.voter']
-
-  OHMedia\NewsBundle\Service\ArticleTagEntityChoice:
-    tags: ['oh_media_security.entity_choice']
