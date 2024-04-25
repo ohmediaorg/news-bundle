@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Admin]
 class ArticleTagController extends AbstractController
 {
-    #[Route('/article-tags', name: 'article_tag_index', methods: ['GET'])]
+    #[Route('/articles/tags', name: 'article_tag_index', methods: ['GET'])]
     public function index(
         ArticleTagRepository $articleTagRepository,
         Paginator $paginator
@@ -41,7 +41,7 @@ class ArticleTagController extends AbstractController
         ]);
     }
 
-    #[Route('/article-tag/create', name: 'article_tag_create', methods: ['GET', 'POST'])]
+    #[Route('/articles/tag/create', name: 'article_tag_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
         ArticleTagRepository $articleTagRepository
@@ -74,7 +74,7 @@ class ArticleTagController extends AbstractController
         ]);
     }
 
-    #[Route('/article-tag/{id}/edit', name: 'article_tag_edit', methods: ['GET', 'POST'])]
+    #[Route('/articles/tag/{id}/edit', name: 'article_tag_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         ArticleTag $articleTag,
@@ -108,7 +108,7 @@ class ArticleTagController extends AbstractController
         ]);
     }
 
-    #[Route('/article-tag/{id}/delete', name: 'article_tag_delete', methods: ['GET', 'POST'])]
+    #[Route('/articles/tag/{id}/delete', name: 'article_tag_delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
         ArticleTag $articleTag,
