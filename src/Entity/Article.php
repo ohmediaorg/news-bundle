@@ -57,10 +57,10 @@ class Article
     {
         $this->tags = new ArrayCollection();
     }
-    // TODO
+
     public function __toString(): string
     {
-        return 'Article #'.$this->id;
+        return $this->title;
     }
 
     public function getId(): ?int
