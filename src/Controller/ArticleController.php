@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
 class ArticleController extends AbstractController
@@ -61,6 +62,9 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $article->getSlug() ?: $article->getTitle();
+            $this->setSlug($article, $articleRepository, $slug);
+
             $articleRepository->save($article, true);
 
             $this->addFlash('notice', 'The article was created successfully.');
@@ -93,6 +97,8 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $article->getSlug() ?: $article->getTitle();
+            $this->setSlug($article, $articleRepository, $slug);
             $articleRepository->save($article, true);
 
             $this->addFlash('notice', 'The article was updated successfully.');
@@ -148,5 +154,23 @@ class ArticleController extends AbstractController
             'delete' => ArticleVoter::DELETE,
             'edit' => ArticleVoter::EDIT,
         ];
+    }
+    // TODO probably rename
+    private function setSlug(Article $article, ArticleRepository $articleRepository, string $slug): void
+    {
+        $slugger = new AsciiSlugger();
+        $slug = $slugger->slug($slug);
+        $id = $article->getId();
+
+        $i = 1;
+        // TODO Need to not include myself.
+        while ($articleRepository->countBySlug($slug, $id)) {
+            // TODO bug, I think it's forever appending.
+            $slug = $slugger->slug($slug.'-'.$i);
+
+            ++$i;
+        }
+
+        $article->setSlug($slug);
     }
 }

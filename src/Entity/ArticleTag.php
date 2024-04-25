@@ -21,13 +21,13 @@ class ArticleTag
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, unique: true)]
     private ?string $slug = null;
 
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\ManyToMany(targetEntity: Article::class)]
+    #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'articleTags')]
     private Collection $articles;
 
     public function __construct()

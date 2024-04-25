@@ -24,7 +24,7 @@ class Article
     #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -50,7 +50,7 @@ class Article
     /**
      * @var Collection<int, ArticleTag>
      */
-    #[ORM\ManyToMany(targetEntity: ArticleTag::class)]
+    #[ORM\ManyToMany(targetEntity: ArticleTag::class, inversedBy: 'articles')]
     private Collection $tags;
 
     public function __construct()
