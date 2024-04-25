@@ -143,7 +143,6 @@ class ArticleController extends AbstractController
     private function getAttributes(): array
     {
         return [
-            // TODO delete the view? Check for other view relate stuff
             'view' => ArticleVoter::VIEW,
             'create' => ArticleVoter::CREATE,
             'delete' => ArticleVoter::DELETE,
