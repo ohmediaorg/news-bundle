@@ -57,7 +57,7 @@ class Article
     {
         $this->tags = new ArrayCollection();
     }
-
+    // TODO
     public function __toString(): string
     {
         return 'Article #'.$this->id;

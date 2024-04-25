@@ -34,7 +34,7 @@ class ArticleTag
     {
         $this->articles = new ArrayCollection();
     }
-
+// TODO
     public function __toString(): string
     {
         return 'Article Tag #'.$this->id;
