@@ -26,7 +26,8 @@
         </span>
       </div>
     </div>
-
+{# TODO filters? #}
+{# TODO sorting? #}
     <table class="table table-striped">
       <thead>
         <tr>
@@ -43,8 +44,20 @@
         <tr>
           <td>{{ article.title }}</td>
           <td>{{ article.author }}</td>
-          <td>STATUS TODO</td>
-          <td>{{ article.getPublishDatetime|datetime }}</td>
+          <td>
+            {% if article.isPublished %}
+              <span class="badge text-bg-success">Published</span>
+            {% elseif article.isScheduled %}
+              <span class="badge text-bg-info">Scheduled</span>
+            {% else %}
+              <span class="badge text-bg-warning">Draft</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not article.isDraft %}
+              {{ article.getPublishDatetime|datetime }}
+            {% endif %}
+          </td>
           <td>{{ article.getCreatedAt|datetime }}</td>
           <td>{{ article.getUpdatedAt|datetime }}</td>
           <td>

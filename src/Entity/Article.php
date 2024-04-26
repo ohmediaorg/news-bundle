@@ -44,7 +44,7 @@ class Article
     #[ORM\JoinColumn(nullable: false)]
     private ?Meta $meta = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $publish_datetime = null;
 
     /**
@@ -157,7 +157,7 @@ class Article
         return $this->publish_datetime;
     }
 
-    public function setPublishDatetime(\DateTimeInterface $publish_datetime): static
+    public function setPublishDatetime(?\DateTimeInterface $publish_datetime): static
     {
         $this->publish_datetime = $publish_datetime;
 
@@ -186,5 +186,20 @@ class Article
         $this->tags->removeElement($tag);
 
         return $this;
+    }
+
+    public function isDraft(): bool
+    {
+        return is_null($this->publish_datetime);
+    }
+
+    public function isPublished(): bool
+    {
+        return !$this->isDraft() && $this->publish_datetime <= new \DateTime();
+    }
+
+    public function isScheduled(): bool
+    {
+        return !$this->isDraft() &&  $this->publish_datetime > new \DateTime();
     }
 }

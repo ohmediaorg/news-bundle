@@ -66,7 +66,11 @@ class ArticleType extends AbstractType
             'data' => $article->getMeta(),
         ]);
 
-        $builder->add('publish_datetime', DateTimeType::class);
+        $builder->add('publish_datetime', DateTimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'help' => 'If empty or in the future, this project will not be visible on the frontend.',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
