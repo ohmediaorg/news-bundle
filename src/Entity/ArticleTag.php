@@ -64,7 +64,7 @@ class ArticleTag
 
     public function setSlug(string $slug): static
     {
-        $this->slug = $slug;
+        $this->slug = strtolower($slug);
 
         return $this;
     }

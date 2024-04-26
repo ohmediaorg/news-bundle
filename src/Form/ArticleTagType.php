@@ -30,13 +30,6 @@ class ArticleTagType extends AbstractType
         $articleTag = $options['data'];
 
         $builder->add('name');
-
-        //TODO show this?
-        $builder->add('slug', null, [
-            'required' => false,
-            'help' => 'Leave blank to auto-generate',
-            'empty_data' => '',
-        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

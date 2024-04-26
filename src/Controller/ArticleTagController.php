@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
 class ArticleTagController extends AbstractController
@@ -47,6 +48,7 @@ class ArticleTagController extends AbstractController
         ArticleTagRepository $articleTagRepository
     ): Response {
         $articleTag = new ArticleTag();
+        $slug = $articleTag->getSlug();
 
         $this->denyAccessUnlessGranted(
             ArticleTagVoter::CREATE,
@@ -61,6 +63,12 @@ class ArticleTagController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if(! $slug){
+                $articleTag->setSlug(
+                    $this->buildSlug($articleTagRepository, $articleTag->getId(), $articleTag->getName())
+                );
+            }
+
             $articleTagRepository->save($articleTag, true);
 
             $this->addFlash('notice', 'The article tag was created successfully.');
@@ -86,13 +94,20 @@ class ArticleTagController extends AbstractController
             'You cannot edit this article tag.'
         );
 
+        $slug = $articleTag->getSlug();
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);
-
+        //TODO Q - Do we want to avoid duplicated code on these methods?
         if ($form->isSubmitted() && $form->isValid()) {
+            if(! $slug){
+                $articleTag->setSlug(
+                    $this->buildSlug($articleTagRepository, $articleTag->getId(), $articleTag->getName())
+                );
+            }
+
             $articleTagRepository->save($articleTag, true);
 
             $this->addFlash('notice', 'The article tag was updated successfully.');
@@ -148,5 +163,21 @@ class ArticleTagController extends AbstractController
             'delete' => ArticleTagVoter::DELETE,
             'edit' => ArticleTagVoter::EDIT,
         ];
+    }
+
+    // TODO Q - could something like this be a CMS util?
+    private function buildSlug(ArticleTagRepository $articleTagRepository, ?int $id, string $name): string
+    {
+        $slugger = new AsciiSlugger();
+        $slug = $slugger->slug($name);
+
+        $i = 1;
+        while ($articleTagRepository->countBySlug($slug, $id)) {
+            $slug = $slugger->slug($name.'-'.$i);
+
+            ++$i;
+        }
+
+        return $slug;
     }
 }

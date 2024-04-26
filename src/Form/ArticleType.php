@@ -32,7 +32,6 @@ class ArticleType extends AbstractType
 
         $builder->add('title');
 
-        //TODO show this?
         $builder->add('slug', null, [
             'required' => false,
             'help' => 'Leave blank to auto-generate',

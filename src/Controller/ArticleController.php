@@ -169,7 +169,7 @@ class ArticleController extends AbstractController
     }
 
     // TODO could something like this be a CMS util?
-    private function buildSlug(ArticleRepository $articleRepository, int $id, string $name): string
+    private function buildSlug(ArticleRepository $articleRepository, ?int $id, string $name): string
     {
         $slugger = new AsciiSlugger();
         $slug = $slugger->slug($name);
