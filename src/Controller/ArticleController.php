@@ -33,6 +33,7 @@ class ArticleController extends AbstractController
         );
 
         $qb = $articleRepository->createQueryBuilder('a');
+        // TODO sort
         $qb->orderBy('a.id', 'desc');
 
         return $this->render('@OHMediaNews/article/article_index.html.twig', [
