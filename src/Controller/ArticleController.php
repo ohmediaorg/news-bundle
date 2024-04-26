@@ -48,6 +48,7 @@ class ArticleController extends AbstractController
         ArticleRepository $articleRepository
     ): Response {
         $article = new Article();
+        $oldSlug = $article->getSlug();
 
         $this->denyAccessUnlessGranted(
             ArticleVoter::CREATE,
@@ -63,7 +64,12 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $slug = $article->getSlug() ?: $article->getTitle();
-            $this->setSlug($article, $articleRepository, $slug);
+
+            if($slug !== $oldSlug) {
+                $article->setSlug(
+                    $this->buildSlug($articleRepository, $article->getId(), $slug)
+                );
+            }
 
             $articleRepository->save($article, true);
 
@@ -89,7 +95,7 @@ class ArticleController extends AbstractController
             $article,
             'You cannot edit this article.'
         );
-
+        $oldSlug = $article->getSlug();
         $form = $this->createForm(ArticleType::class, $article);
 
         $form->add('submit', SubmitType::class);
@@ -98,7 +104,13 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $slug = $article->getSlug() ?: $article->getTitle();
-            $this->setSlug($article, $articleRepository, $slug);
+
+            if($slug !== $oldSlug) {
+                $article->setSlug(
+                    $this->buildSlug($articleRepository, $article->getId(), $slug)
+                );
+            }
+
             $articleRepository->save($article, true);
 
             $this->addFlash('notice', 'The article was updated successfully.');
@@ -155,22 +167,20 @@ class ArticleController extends AbstractController
             'edit' => ArticleVoter::EDIT,
         ];
     }
-    // TODO probably rename
-    private function setSlug(Article $article, ArticleRepository $articleRepository, string $slug): void
+
+    // TODO could something like this be a CMS util?
+    private function buildSlug(ArticleRepository $articleRepository, int $id, string $name): string
     {
         $slugger = new AsciiSlugger();
-        $slug = $slugger->slug($slug);
-        $id = $article->getId();
+        $slug = $slugger->slug($name);
 
         $i = 1;
-        // TODO Need to not include myself.
         while ($articleRepository->countBySlug($slug, $id)) {
-            // TODO bug, I think it's forever appending.
-            $slug = $slugger->slug($slug.'-'.$i);
+            $slug = $slugger->slug($name.'-'.$i);
 
             ++$i;
         }
 
-        $article->setSlug($slug);
+        return $slug;
     }
 }
