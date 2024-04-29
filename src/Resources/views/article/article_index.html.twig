@@ -26,7 +26,7 @@
         </span>
       </div>
     </div>
-{# TODO filters? #}
+{# TODO search? #}
 {# TODO sorting? #}
     <table class="table table-striped">
       <thead>
@@ -46,11 +46,11 @@
           <td>{{ article.author }}</td>
           <td>
             {% if article.isPublished %}
-              <span class="badge text-bg-success">Published</span>
+              {{ badge_success('Published') }}
             {% elseif article.isScheduled %}
-              <span class="badge text-bg-info">Scheduled</span>
+              {{ badge_info('Scheduled') }}
             {% else %}
-              <span class="badge text-bg-warning">Draft</span>
+              {{ badge_warning('Draft')}}
             {% endif %}
           </td>
           <td>
