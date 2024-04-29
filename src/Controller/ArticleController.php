@@ -33,8 +33,8 @@ class ArticleController extends AbstractController
         );
 
         $qb = $articleRepository->createQueryBuilder('a');
-        // TODO sort
-        $qb->orderBy('a.id', 'desc');
+        $qb->orderBy('CASE WHEN a.publish_datetime IS NULL THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('a.publish_datetime', 'DESC');
 
         return $this->render('@OHMediaNews/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
