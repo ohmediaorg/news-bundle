@@ -46,11 +46,11 @@
           <td>{{ article.author }}</td>
           <td>
             {% if article.isPublished %}
-              {{ badge_success('Published') }}
+              {{ bootstrap_badge_success('Published') }}
             {% elseif article.isScheduled %}
-              {{ badge_info('Scheduled') }}
+              {{ bootstrap_badge_info('Scheduled') }}
             {% else %}
-              {{ badge_warning('Draft')}}
+              {{ bootstrap_badge_warning('Draft')}}
             {% endif %}
           </td>
           <td>
