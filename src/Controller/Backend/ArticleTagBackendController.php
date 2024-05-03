@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller;
+namespace OHMedia\NewsBundle\Controller\Backend;
 
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleTagType;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
-class ArticleTagController extends AbstractController
+class ArticleTagBackendController extends AbstractController
 {
     #[Route('/articles/tags', name: 'article_tag_index', methods: ['GET'])]
     public function index(

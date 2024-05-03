@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller;
+namespace OHMedia\NewsBundle\Controller\Backend;
 
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Form\ArticleType;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
-class ArticleController extends AbstractController
+class ArticleBackendController extends AbstractController
 {
     #[Route('/articles', name: 'article_index', methods: ['GET'])]
     public function index(
