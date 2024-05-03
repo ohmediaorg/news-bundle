@@ -27,6 +27,7 @@ class ArticleTag
     /**
      * @var Collection<int, Article>
      */
+    //TODO - This is casusing an error when attempting to delete?
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'articleTags')]
     private Collection $articles;
 
