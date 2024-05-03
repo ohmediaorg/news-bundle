@@ -1,0 +1,9 @@
+<h1>Hello Articles!</h1>
+
+<ul>
+  {% for article in pagination.results %}
+    <li>
+      {{ article.title }}
+    </li>
+  {% endfor %}
+</ul>
