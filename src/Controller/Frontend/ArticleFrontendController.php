@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller;
+namespace OHMedia\NewsBundle\Controller\Frontend;
 
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
