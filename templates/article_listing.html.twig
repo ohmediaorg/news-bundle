@@ -1,9 +1,30 @@
-<h1>Hello Articles!</h1>
+<section class="post-tiles">
 
-<ul>
-  {% for article in pagination.results %}
-    <li>
-      {{ article.title }}
-    </li>
+ {% for article in pagination.results %}
+
+  <div class="post-item">
+    <div class="card-item__image">
+      <a href="/{{ parent_path }}/{{ article.slug }}">
+        {{ image_tag(article.image, {loading: 'lazy'}) }}
+      </a>
+    </div>
+
+
+    <div class="card-item__inner">
+      <div class="card-item__details">
+        <p class="card-item__date">{{ article.getPublishDatetime|datetime }}</p>
+        <h3 class="card-item__title"><a href="/{{ parent_path }}/{{ article.slug }}">{{ article.title }}</a></h3>
+        <p class="card-item__author">By {{ article.author }}</p>
+        <div class="card-item__copy card-item__clip">
+          <p>{{ article.snippet}}</p>
+        </div>
+      </div>
+
+      <div class="card-item__more"><a href="/{{ parent_path }}/{{ article.slug }}" class="btn">Read More</a></div>
+    </div>
+  </div>
   {% endfor %}
-</ul>
+</section>
+
+{{ bootstrap_pagination(pagination) }}
+<small>{{ bootstrap_pagination_info(pagination) }}</small>

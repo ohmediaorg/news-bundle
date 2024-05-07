@@ -11,7 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleFrontendController extends AbstractController
 {
-    #[Route('/news', name: 'news')]
+    // TODO how do we handle the parent routes?
+    const PARENT_PATH = 'news';
+
+    #[Route('/' . self::PARENT_PATH, name: 'news')]
     public function listing(
         Request $request,
         Paginator $paginator,
@@ -25,6 +28,7 @@ class ArticleFrontendController extends AbstractController
 
         return $this->render('@OHMediaNews/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
+            'parent_path' => self::PARENT_PATH,
         ]);
     }
 }
