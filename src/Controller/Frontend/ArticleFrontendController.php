@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller;
+namespace OHMedia\NewsBundle\Controller\Frontend;
 
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
@@ -26,7 +26,7 @@ class ArticleFrontendController extends AbstractController
             // ->where('a.publish_datetime <= NOW()') //TODO
             ->orderBy('a.publish_datetime', 'DESC');
 
-        return $this->render('@OHMediaNews/article_listing.html.twig', [
+        return $this->render('@OHMediaNews/frontend/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
         ]);
@@ -50,7 +50,7 @@ class ArticleFrontendController extends AbstractController
             // TODO not found
         }
 
-        return $this->render('@OHMediaNews/article_item.html.twig', [
+        return $this->render('@OHMediaNews/frontend/article_item.html.twig', [
             'parent_path' => self::PARENT_PATH,
             'article' => $article,
         ]);

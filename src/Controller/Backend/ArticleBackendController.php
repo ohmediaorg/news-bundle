@@ -36,7 +36,7 @@ class ArticleBackendController extends AbstractController
         $qb->orderBy('CASE WHEN a.publish_datetime IS NULL THEN 0 ELSE 1 END', 'ASC')
             ->addOrderBy('a.publish_datetime', 'DESC');
 
-        return $this->render('@OHMediaNews/article/article_index.html.twig', [
+        return $this->render('@OHMediaNews/backend/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
             'new_article' => $newArticle,
             'attributes' => $this->getAttributes(),
@@ -79,7 +79,7 @@ class ArticleBackendController extends AbstractController
             return $this->redirectToRoute('article_index');
         }
 
-        return $this->render('@OHMediaNews/article/article_create.html.twig', [
+        return $this->render('@OHMediaNews/backend/article/article_create.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
@@ -121,7 +121,7 @@ class ArticleBackendController extends AbstractController
             ]);
         }
 
-        return $this->render('@OHMediaNews/article/article_edit.html.twig', [
+        return $this->render('@OHMediaNews/backend/article/article_edit.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
@@ -153,7 +153,7 @@ class ArticleBackendController extends AbstractController
             return $this->redirectToRoute('article_index');
         }
 
-        return $this->render('@OHMediaNews/article/article_delete.html.twig', [
+        return $this->render('@OHMediaNews/backend/article/article_delete.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);

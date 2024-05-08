@@ -35,7 +35,7 @@ class ArticleTagBackendController extends AbstractController
         $qb = $articleTagRepository->createQueryBuilder('at');
         $qb->orderBy('at.id', 'desc');
 
-        return $this->render('@OHMediaNews/article_tag/article_tag_index.html.twig', [
+        return $this->render('@OHMediaNews/backend/article_tag/article_tag_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
@@ -76,7 +76,7 @@ class ArticleTagBackendController extends AbstractController
             return $this->redirectToRoute('article_tag_index');
         }
 
-        return $this->render('@OHMediaNews/article_tag/article_tag_create.html.twig', [
+        return $this->render('@OHMediaNews/backend/article_tag/article_tag_create.html.twig', [
             'form' => $form->createView(),
             'article_tag' => $articleTag,
         ]);
@@ -117,7 +117,7 @@ class ArticleTagBackendController extends AbstractController
             ]);
         }
 
-        return $this->render('@OHMediaNews/article_tag/article_tag_edit.html.twig', [
+        return $this->render('@OHMediaNews/backend/article_tag/article_tag_edit.html.twig', [
             'form' => $form->createView(),
             'article_tag' => $articleTag,
         ]);
@@ -149,7 +149,7 @@ class ArticleTagBackendController extends AbstractController
             return $this->redirectToRoute('article_tag_index');
         }
 
-        return $this->render('@OHMediaNews/article_tag/article_tag_delete.html.twig', [
+        return $this->render('@OHMediaNews/backend/article_tag/article_tag_delete.html.twig', [
             'form' => $form->createView(),
             'article_tag' => $articleTag,
         ]);
