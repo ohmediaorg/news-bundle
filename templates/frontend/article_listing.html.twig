@@ -2,7 +2,11 @@
 <section>
   {% for tag in tags %}
 
-  <a href="/{{ parent_path }}/tag/{{ tag.slug }}" {% if tag.active %}class="active"{% endif %}>{{ tag.name }}</a>
+  {% if tag.active %}
+    <a href="/{{ parent_path }}" class="active">{{ tag.name }}</a>
+  {% else %}
+    <a href="/{{ parent_path }}/tag/{{ tag.slug }}" class="active">{{ tag.name }}</a>
+  {% endif %}
 
   {% endfor %}
 </section>
