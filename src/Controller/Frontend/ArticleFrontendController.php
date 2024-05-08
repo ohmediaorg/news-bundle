@@ -3,6 +3,7 @@
 namespace OHMedia\NewsBundle\Controller\Frontend;
 
 use OHMedia\BootstrapBundle\Service\Paginator;
+use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,7 @@ class ArticleFrontendController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        foreach($tags as $index => $tag) {
+        foreach ($tags as $index => $tag) {
             $tags[$index]->active = $tag->getSlug() === $tagSlug;
         }
 
@@ -100,9 +101,15 @@ class ArticleFrontendController extends AbstractController
             // TODO not found
         }
 
+        $meta = (new Meta())
+            ->setTitle($article->getTitle())
+            ->setDescription($article->getSnippet())
+            ->setAppendBaseTitle(true); // TODO not sure what this does
+
         return $this->render('@OHMediaNews/frontend/article_item.html.twig', [
             'parent_path' => self::PARENT_PATH,
             'article' => $article,
+            'meta_setting' => $meta,
         ]);
     }
 }
