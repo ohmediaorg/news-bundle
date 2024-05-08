@@ -1,5 +1,14 @@
-<section class="post-tiles">
+{% if tags is not empty %}
+<section>
+  {% for tag in tags %}
 
+  <a href="/{{ parent_path }}/tag/{{ tag.slug }}" {% if tag.active %}class="active"{% endif %}>{{ tag.name }}</a>
+
+  {% endfor %}
+</section>
+{% endif %}
+
+<section class="post-tiles">
  {% for article in pagination.results %}
 
   <div class="post-item">
@@ -8,7 +17,6 @@
         {{ image_tag(article.image, {loading: 'lazy'}) }}
       </a>
     </div>
-
 
     <div class="card-item__inner">
       <div class="card-item__details">

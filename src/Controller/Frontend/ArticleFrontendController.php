@@ -4,6 +4,7 @@ namespace OHMedia\NewsBundle\Controller\Frontend;
 
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
+use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,21 +15,70 @@ class ArticleFrontendController extends AbstractController
     // TODO how do we handle the parent routes?
     public const PARENT_PATH = 'news';
 
-    #[Route('/'.self::PARENT_PATH, name: 'news_listing')]
-    public function listing(
+    private function getListingQueryBuilder(ArticleRepository $articleRepository): \Doctrine\ORM\QueryBuilder
+    {
+        return $articleRepository->createQueryBuilder('a')
+            ->where('a.publish_datetime IS NOT NULL')
+            ->orderBy('a.publish_datetime', 'DESC');
+    }
+
+    private function getTags(ArticleTagRepository $articleTagRepository, string $tagSlug = ''): array
+    {
+        $tags = $articleTagRepository->createQueryBuilder('t')
+            ->join('t.articles', 'a')
+            ->getQuery()
+            ->getResult();
+
+        foreach($tags as $index => $tag) {
+            $tags[$index]->active = $tag->getSlug() === $tagSlug;
+        }
+
+        return $tags;
+    }
+
+    #[Route('/news/tag/{tagSlug}', name: 'news_tag_listing')]
+    public function tagListing(
         Request $request,
         Paginator $paginator,
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
+        ArticleTagRepository $articleTagRepository,
+        string $tagSlug = ''
     ): Response {
-        $qb = $articleRepository->createQueryBuilder('a');
-        // TODO is there a filter equivalant for published?
-        $qb->where('a.publish_datetime IS NOT NULL')
-            // ->where('a.publish_datetime <= NOW()') //TODO
-            ->orderBy('a.publish_datetime', 'DESC');
+        if (!$tagSlug) {
+            // TODO not found
+        }
+
+        $tags = $this->getTags($articleTagRepository, $tagSlug);
+        $qb = $this->getListingQueryBuilder($articleRepository);
+
+        $qb->join('a.tags', 't')
+            ->andWhere('t.slug = :tagSlug')
+            ->setParameter('tagSlug', $tagSlug);
+
+        // TODO if empty
 
         return $this->render('@OHMediaNews/frontend/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
+            'tags' => $tags,
+        ]);
+    }
+
+    #[Route('/'.self::PARENT_PATH, name: 'news_listing')]
+    public function listing(
+        Request $request,
+        Paginator $paginator,
+        ArticleRepository $articleRepository,
+        ArticleTagRepository $articleTagRepository
+    ): Response {
+        $qb = $this->getListingQueryBuilder($articleRepository);
+
+        $tags = $this->getTags($articleTagRepository);
+
+        return $this->render('@OHMediaNews/frontend/article_listing.html.twig', [
+            'pagination' => $paginator->paginate($qb, 8),
+            'parent_path' => self::PARENT_PATH,
+            'tags' => $tags,
         ]);
     }
 
@@ -36,7 +86,7 @@ class ArticleFrontendController extends AbstractController
     public function item(
         Request $request,
         ArticleRepository $articleRepository,
-        string $slug
+        string $slug = ''
     ): Response {
         $qb = $articleRepository->createQueryBuilder('a');
         // TODO is there a filter equivalant for published?
@@ -46,7 +96,7 @@ class ArticleFrontendController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        if(! $article) {
+        if (!$article) {
             // TODO not found
         }
 
