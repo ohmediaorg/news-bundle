@@ -116,43 +116,14 @@ class ArticleFrontendController extends AbstractController
         return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
     }
 
-    // TODO can I instead have two routes on the main listing? Retthink this
-    //  -- Maybe tags should be with the search form instead?
-    // TODO - Maybe this should instead be twig functions? YES
     #[Route('/news/tag/{tagSlug}', name: 'news_tag_listing')]
-    public function tagListing(
-        Request $request,
-        Paginator $paginator,
-        ArticleRepository $articleRepository,
-        ArticleTagRepository $articleTagRepository,
-        string $tagSlug = ''
-    ): Response {
-        if (!$tagSlug) {
-            // TODO not found
-        }
-
-        $tags = $this->getTags($articleTagRepository, $tagSlug);
-        $qb = $this->getListingQueryBuilder($articleRepository);
-
-        $qb->join('a.tags', 't')
-            ->andWhere('t.slug = :tagSlug')
-            ->setParameter('tagSlug', $tagSlug);
-
-        // TODO if empty
-
-        return $this->render('@OHMediaNews/article_listing.html.twig', [
-            'pagination' => $paginator->paginate($qb, 8),
-            'parent_path' => self::PARENT_PATH,
-            'tags' => $tags,
-        ]);
-    }
-
     #[Route('/'.self::PARENT_PATH, name: 'news_listing')]
     public function listing(
         Request $request,
         Paginator $paginator,
         ArticleRepository $articleRepository,
-        ArticleTagRepository $articleTagRepository
+        ArticleTagRepository $articleTagRepository,
+        string $tagSlug = ''
     ): Response {
 
         $searchForm = $this->getSearchForm($request);
@@ -160,7 +131,13 @@ class ArticleFrontendController extends AbstractController
 
         $qb = $this->getListingQueryBuilder($articleRepository);
 
-        $tags = $this->getTags($articleTagRepository);
+        $tags = $this->getTags($articleTagRepository, $tagSlug);
+
+        if($tagSlug){
+            $qb->join('a.tags', 't')
+            ->andWhere('t.slug = :tagSlug')
+            ->setParameter('tagSlug', $tagSlug);
+        }
 
         if ($search) {
             $searchFields = [
