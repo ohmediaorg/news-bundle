@@ -116,7 +116,7 @@ class ArticleFrontendController extends AbstractController
         return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
     }
 
-    #[Route('/news/tag/{tagSlug}', name: 'news_tag_listing')]
+    #[Route('/'.self::PARENT_PATH.'/tag/{tagSlug}', name: 'news_tag_listing')]
     #[Route('/'.self::PARENT_PATH, name: 'news_listing')]
     public function listing(
         Request $request,
