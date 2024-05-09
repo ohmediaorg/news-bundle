@@ -159,7 +159,9 @@ class ArticleFrontendController extends AbstractController
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
-            'searchForm' => $searchForm->createView(),
+            'search_form' => $searchForm->createView(),
+            'route_name' => $tagSlug ? 'news_tag_listing' : 'news_listing',
+            'route_params' => $tagSlug ? ['tagSlug' => $tagSlug] : [],
         ]);
     }
 
