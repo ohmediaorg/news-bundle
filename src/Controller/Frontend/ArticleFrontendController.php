@@ -22,6 +22,23 @@ class ArticleFrontendController extends AbstractController
     // Can we replace this with names?
     public const PARENT_PATH = 'news';
 
+    private function searchFilter(QueryBuilder $qb, string $search)
+    {
+        $searchFields = [
+            'a.title',
+            'a.content',
+            'a.author',
+        ];
+        $ors = [];
+
+        foreach ($searchFields as $searchField) {
+            $ors[] = "$searchField LIKE :search";
+        }
+
+        return $qb->andWhere('('.implode(' OR ', $ors).')')
+            ->setParameter('search', '%'.$search.'%');
+    }
+
     private function getSearchForm(Request $request): FormInterface
     {
         $formBuilder = $this->container->get('form.factory')
@@ -131,12 +148,20 @@ class ArticleFrontendController extends AbstractController
             // TODO not found
         }
 
+        $searchForm = $this->getSearchForm($request);
+        $search = $searchForm->get('search')->getData();
+
         $tags = $this->getTags($articleTagRepository, $tagSlug);
+
         $qb = $this->getListingQueryBuilder($articleRepository);
 
         $qb->join('a.tags', 't')
             ->andWhere('t.slug = :tagSlug')
             ->setParameter('tagSlug', $tagSlug);
+
+        if ($search) {
+            $qb = $this->searchFilter($qb, $search);
+        }
 
         // TODO if empty
 
@@ -144,6 +169,7 @@ class ArticleFrontendController extends AbstractController
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
+            'searchForm' => $searchForm->createView(),
         ]);
     }
 
@@ -154,7 +180,6 @@ class ArticleFrontendController extends AbstractController
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository
     ): Response {
-
         $searchForm = $this->getSearchForm($request);
         $search = $searchForm->get('search')->getData();
 
@@ -163,19 +188,7 @@ class ArticleFrontendController extends AbstractController
         $tags = $this->getTags($articleTagRepository);
 
         if ($search) {
-            $searchFields = [
-                'a.title',
-                'a.content',
-                'a.author',
-            ];
-            $ors = [];
-
-            foreach ($searchFields as $searchField) {
-                $ors[] = "$searchField LIKE :search";
-            }
-
-            $qb->andWhere('('.implode(' OR ', $ors).')')
-                ->setParameter('search', '%'.$search.'%');
+            $qb = $this->searchFilter($qb, $search);
         }
 
         return $this->render('@OHMediaNews/article_listing.html.twig', [
