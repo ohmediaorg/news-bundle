@@ -38,7 +38,7 @@ class ArticleFrontendController extends AbstractController
             )
         );
     }
-
+    // TODO see Article Tag Enable/Disable
     private function getTags(ArticleTagRepository $articleTagRepository, string $tagSlug = ''): array
     {
         $tags = $articleTagRepository->createQueryBuilder('t')
@@ -111,7 +111,7 @@ class ArticleFrontendController extends AbstractController
 
         // TODO if empty
 
-        return $this->render('@OHMediaNews/frontend/article_listing.html.twig', [
+        return $this->render('@OHMediaNews/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
@@ -129,7 +129,7 @@ class ArticleFrontendController extends AbstractController
 
         $tags = $this->getTags($articleTagRepository);
 
-        return $this->render('@OHMediaNews/frontend/article_listing.html.twig', [
+        return $this->render('@OHMediaNews/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
@@ -162,7 +162,7 @@ class ArticleFrontendController extends AbstractController
 
         $schema = $this->schema($article, $request->getSchemeAndHttpHost());
 
-        return $this->render('@OHMediaNews/frontend/article_item.html.twig', [
+        return $this->render('@OHMediaNews/article_item.html.twig', [
             'parent_path' => self::PARENT_PATH,
             'article' => $article,
             'meta_setting' => $meta,
