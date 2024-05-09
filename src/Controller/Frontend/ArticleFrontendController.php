@@ -2,12 +2,16 @@
 
 namespace OHMedia\NewsBundle\Controller\Frontend;
 
+use Doctrine\ORM\QueryBuilder;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,9 +19,31 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleFrontendController extends AbstractController
 {
     // TODO how do we handle the parent routes?
+    // Can we replace this with names?
     public const PARENT_PATH = 'news';
 
-    private function getListingQueryBuilder(ArticleRepository $articleRepository): \Doctrine\ORM\QueryBuilder
+    private function getSearchForm(Request $request): FormInterface
+    {
+        $formBuilder = $this->container->get('form.factory')
+            ->createNamedBuilder('', FormType::class, null, [
+                'csrf_protection' => false,
+            ]);
+
+        $formBuilder
+        ->setMethod('GET')
+        ->add('search', TextType::class, [
+            'label' => 'Search',
+            'required' => false,
+        ]);
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        return $form;
+    }
+
+    private function getListingQueryBuilder(ArticleRepository $articleRepository): QueryBuilder
     {
         return $articleRepository->createQueryBuilder('a')
             ->where('a.publish_datetime IS NOT NULL')
@@ -38,6 +64,7 @@ class ArticleFrontendController extends AbstractController
             )
         );
     }
+
     // TODO see Article Tag Enable/Disable
     private function getTags(ArticleTagRepository $articleTagRepository, string $tagSlug = ''): array
     {
@@ -79,7 +106,7 @@ class ArticleFrontendController extends AbstractController
         if (!empty($image)) {
             $schema['image'] = [
                 '@type' => 'ImageObject',
-                'url' => $webRoot.'/'.$image->getPath(), //TODO not sure this is correct
+                'url' => $webRoot.'/'.$image->getPath(), // TODO not sure this is correct
                 'width' => $image->getWidth(),
                 'height' => $image->getHeight(),
             ];
@@ -89,6 +116,8 @@ class ArticleFrontendController extends AbstractController
         return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
     }
 
+    // TODO can I instead have two routes on the main listing? Retthink this
+    //  -- Maybe tags should be with the search form instead?
     // TODO - Maybe this should instead be twig functions? YES
     #[Route('/news/tag/{tagSlug}', name: 'news_tag_listing')]
     public function tagListing(
@@ -125,14 +154,35 @@ class ArticleFrontendController extends AbstractController
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository
     ): Response {
+
+        $searchForm = $this->getSearchForm($request);
+        $search = $searchForm->get('search')->getData();
+
         $qb = $this->getListingQueryBuilder($articleRepository);
 
         $tags = $this->getTags($articleTagRepository);
+
+        if ($search) {
+            $searchFields = [
+                'a.title',
+                'a.content',
+                'a.author',
+            ];
+            $ors = [];
+
+            foreach ($searchFields as $searchField) {
+                $ors[] = "$searchField LIKE :search";
+            }
+
+            $qb->andWhere('('.implode(' OR ', $ors).')')
+                ->setParameter('search', '%'.$search.'%');
+        }
 
         return $this->render('@OHMediaNews/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
             'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
+            'searchForm' => $searchForm->createView(),
         ]);
     }
 
