@@ -5,6 +5,7 @@ namespace OHMedia\NewsBundle\Security\Voter;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\SecurityBundle\Entity\User;
 use OHMedia\SecurityBundle\Security\Voter\AbstractEntityVoter;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ArticleTagVoter extends AbstractEntityVoter
 {
@@ -13,6 +14,16 @@ class ArticleTagVoter extends AbstractEntityVoter
     public const VIEW = 'view';
     public const EDIT = 'edit';
     public const DELETE = 'delete';
+
+    public function __construct(
+        ParameterBagInterface $parameterBag
+    ) {
+        $this->articleTags = $parameterBag->get('oh_media_news.article_tags');
+    $test = 1;
+        // parent::__construct();
+    }
+
+
 
     protected function getAttributes(): array
     {
