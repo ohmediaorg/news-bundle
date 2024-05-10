@@ -6,6 +6,9 @@ use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\SecurityBundle\Entity\User;
 use OHMedia\SecurityBundle\Security\Voter\AbstractEntityVoter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+
+
 
 class ArticleTagVoter extends AbstractEntityVoter
 {
@@ -15,10 +18,11 @@ class ArticleTagVoter extends AbstractEntityVoter
     public const EDIT = 'edit';
     public const DELETE = 'delete';
 
+
     public function __construct(
-        ParameterBagInterface $parameterBag
+        bool $articleTags
     ) {
-        $this->articleTags = $parameterBag->get('oh_media_news.article_tags');
+
     $test = 1;
         // parent::__construct();
     }
@@ -43,6 +47,8 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     protected function canIndex(ArticleTag $articleTag, User $loggedIn): bool
     {
+
+
         return true;
     }
 
