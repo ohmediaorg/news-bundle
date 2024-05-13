@@ -11,7 +11,5 @@ services:
     exclude:
       - '../src/Entity/'
       - '../src/OHMediaNewsBundle.php'
-
-  OHMedia\NewsBundle\Controller\Frontend\ArticleFrontendController:
     bind:
       $enabledArticleTags: '%oh_media_news.article_tags%'

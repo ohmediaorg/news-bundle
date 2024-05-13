@@ -123,6 +123,7 @@ class ArticleFrontendController extends AbstractController
         Paginator $paginator,
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository,
+        bool $enabledArticleTags,
         string $tagSlug = ''
     ): Response {
 
