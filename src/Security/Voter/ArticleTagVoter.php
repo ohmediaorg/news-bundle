@@ -8,8 +8,6 @@ use OHMedia\SecurityBundle\Security\Voter\AbstractEntityVoter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
-
-
 class ArticleTagVoter extends AbstractEntityVoter
 {
     public const INDEX = 'index';
@@ -18,16 +16,10 @@ class ArticleTagVoter extends AbstractEntityVoter
     public const EDIT = 'edit';
     public const DELETE = 'delete';
 
-
-    public function __construct(
-        bool $articleTags
-    ) {
-
-    $test = 1;
-        // parent::__construct();
+    public function __construct(bool $enabledArticleTags)
+    {
+        $this->enabledArticleTags = $enabledArticleTags;
     }
-
-
 
     protected function getAttributes(): array
     {
@@ -47,28 +39,26 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     protected function canIndex(ArticleTag $articleTag, User $loggedIn): bool
     {
-
-
-        return true;
+        return $this->enabledArticleTags;
     }
 
     protected function canCreate(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return true;
+        return $this->enabledArticleTags;
     }
 
     protected function canView(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return true;
+        return $this->enabledArticleTags;
     }
 
     protected function canEdit(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return true;
+        return $this->enabledArticleTags;
     }
 
     protected function canDelete(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return true;
+        return $this->enabledArticleTags;
     }
 }
