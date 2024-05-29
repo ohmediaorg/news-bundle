@@ -8,6 +8,7 @@ use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
+use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -65,7 +66,6 @@ class ArticleFrontendController extends AbstractController
         );
     }
 
-    // TODO see Article Tag Enable/Disable
     private function getTags(ArticleTagRepository $articleTagRepository, string $tagSlug = ''): array
     {
         $tags = $articleTagRepository->createQueryBuilder('t')
@@ -126,15 +126,16 @@ class ArticleFrontendController extends AbstractController
         bool $enabledArticleTags,
         string $tagSlug = ''
     ): Response {
-
         $searchForm = $this->getSearchForm($request);
         $search = $searchForm->get('search')->getData();
 
         $qb = $this->getListingQueryBuilder($articleRepository);
 
-        $tags = $this->getTags($articleTagRepository, $tagSlug);
+        $tags = ArticleTagVoter::INDEX ?
+            $this->getTags($articleTagRepository, $tagSlug) :
+            null;
 
-        if($tagSlug){
+        if ($tagSlug) {
             $qb->join('a.tags', 't')
             ->andWhere('t.slug = :tagSlug')
             ->setParameter('tagSlug', $tagSlug);

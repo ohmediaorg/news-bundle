@@ -15,20 +15,20 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
 {
     public function getNavItem(): ?NavItemInterface
     {
-        $nav = null;
-
-        if ($this->isGranted(ArticleVoter::INDEX, new Article())) {
-            $nav = (new NavDropdown('Articles', 'article_index'))
-                ->setIcon('newspaper')
-                ->addLink((new NavLink('Articles', 'article_index'))
-                    ->setIcon('newspaper'));
-
-            if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
-                $nav->addLink((new NavLink('Tags', 'article_tag_index'))
-                    ->setIcon('tags'));
-            }
+        if (!$this->isGranted(ArticleVoter::INDEX, new Article())) {
+            return null;
         }
 
-        return $nav;
+        if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
+            return (new NavDropdown('Articles', 'article_index'))
+                    ->setIcon('newspaper')
+                    ->addLink(new NavLink('Articles', 'article_index'))
+                    ->addLink(new NavLink('Tags', 'article_tag_index'));
+        } else {
+            return (new NavLink('Articles', 'article_index'))
+                ->setIcon('newspaper');
+        }
+
+        return null;
     }
 }
