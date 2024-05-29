@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
@@ -22,6 +23,17 @@ class ArticleFrontendController extends AbstractController
     // TODO how do we handle the parent routes?
     // Can we replace this with names?
     public const PARENT_PATH = 'news';
+
+    private $tagsEnabled;
+
+    private function areTagsEnabled(): bool
+    {
+        if (!isset($this->tagsEnabled)) {
+            $this->tagsEnabled = $this->isGranted(ArticleTagVoter::INDEX, new ArticleTag());
+        }
+
+        return $this->tagsEnabled;
+    }
 
     private function getSearchForm(Request $request): FormInterface
     {
@@ -128,17 +140,18 @@ class ArticleFrontendController extends AbstractController
     ): Response {
         $searchForm = $this->getSearchForm($request);
         $search = $searchForm->get('search')->getData();
-
+        $tags = [];
         $qb = $this->getListingQueryBuilder($articleRepository);
 
-        $tags = ArticleTagVoter::INDEX ?
-            $this->getTags($articleTagRepository, $tagSlug) :
-            null;
+        //TODO tag listing can be seperated out. Seperate controller?
+        if ($this->areTagsEnabled()) {
+            $tags = $this->getTags($articleTagRepository, $tagSlug);
 
-        if ($tagSlug) {
-            $qb->join('a.tags', 't')
-            ->andWhere('t.slug = :tagSlug')
-            ->setParameter('tagSlug', $tagSlug);
+            if ($tagSlug) {
+                $qb->join('a.tags', 't')
+                ->andWhere('t.slug = :tagSlug')
+                ->setParameter('tagSlug', $tagSlug);
+            }
         }
 
         if ($search) {
