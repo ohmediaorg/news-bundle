@@ -1,5 +1,12 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: OHMedia\NewsBundle\Controller
-    type: attribute
+controllers_backend:
+  resource:
+    path: ../src/Controller/Backend/
+    namespace: OHMedia\NewsBundle\Controller\Backend
+  type: attribute
+
+controllers_frontend:
+  resource:
+    path: ../src/Controller/Frontend/
+    namespace: OHMedia\NewsBundle\Controller\Frontend
+  type: attribute
+  prefix: '%oh_media_news.parent_path%'

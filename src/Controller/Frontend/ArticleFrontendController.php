@@ -20,10 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleFrontendController extends AbstractController
 {
-    // TODO how do we handle the parent routes?
-    // Can we replace this with names?
-    public const PARENT_PATH = 'news';
-
     private $tagsEnabled;
 
     private function areTagsEnabled(): bool
@@ -128,8 +124,8 @@ class ArticleFrontendController extends AbstractController
         return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
     }
 
-    #[Route('/'.self::PARENT_PATH.'/tag/{tagSlug}', name: 'news_tag_listing')]
-    #[Route('/'.self::PARENT_PATH, name: 'news_listing')]
+    #[Route('/tag/{tagSlug}', name: 'news_tag_listing')]
+    #[Route('/', name: 'news_listing')]
     public function listing(
         Request $request,
         Paginator $paginator,
@@ -172,7 +168,6 @@ class ArticleFrontendController extends AbstractController
 
         return $this->render('@OHMediaNews/article_listing.html.twig', [
             'pagination' => $paginator->paginate($qb, 8),
-            'parent_path' => self::PARENT_PATH,
             'tags' => $tags,
             'search_form' => $searchForm->createView(),
             'route_name' => $tagSlug ? 'news_tag_listing' : 'news_listing',
@@ -180,7 +175,7 @@ class ArticleFrontendController extends AbstractController
         ]);
     }
 
-    #[Route('/'.self::PARENT_PATH.'/{slug}', name: 'news_item')]
+    #[Route('/{slug}', name: 'news_item')]
     public function item(
         Request $request,
         ArticleRepository $articleRepository,
@@ -207,7 +202,6 @@ class ArticleFrontendController extends AbstractController
         $schema = $this->schema($article, $request->getSchemeAndHttpHost());
 
         return $this->render('@OHMediaNews/article_item.html.twig', [
-            'parent_path' => self::PARENT_PATH,
             'article' => $article,
             'meta_setting' => $meta,
             'schema' => $schema,

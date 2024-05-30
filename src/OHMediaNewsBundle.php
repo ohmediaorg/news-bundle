@@ -16,6 +16,9 @@ class OHMediaNewsBundle extends AbstractBundle
                 ->booleanNode('article_tags')
                     ->defaultTrue()
                 ->end()
+                ->scalarNode('parent_path')
+                    ->defaultValue('news')
+                ->end()
             ->end();
     }
 
@@ -28,6 +31,7 @@ class OHMediaNewsBundle extends AbstractBundle
 
         $containerConfigurator->parameters()
             ->set('oh_media_news.article_tags', $config['article_tags'])
+            ->set('oh_media_news.parent_path', $config['parent_path'])
         ;
     }
 }
