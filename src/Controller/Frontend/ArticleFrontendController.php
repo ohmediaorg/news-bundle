@@ -59,21 +59,6 @@ class ArticleFrontendController extends AbstractController
             ->orderBy('a.publish_datetime', 'DESC');
     }
 
-    private static function cleanStrings(string $string): string
-    {
-        $chars = [
-            "\n",
-            "\r",
-            "\t",
-        ];
-
-        return trim(
-            strip_tags(
-                str_replace($chars, '', $string)
-            )
-        );
-    }
-
     private function getTags(ArticleTagRepository $articleTagRepository, string $tagSlug = ''): array
     {
         $tags = $articleTagRepository->createQueryBuilder('t')
@@ -86,42 +71,6 @@ class ArticleFrontendController extends AbstractController
         }
 
         return $tags;
-    }
-
-    // TODO footer? Twig function? YES
-    private function schema(Article $article, string $webRoot): string
-    {
-        $schema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'Article',
-            'headline' => $article->getTitle(),
-            'datePublished' => $article->getPublishDatetime()->format(\DateTime::ATOM),
-            'dateModified' => $article->getUpdatedAt()->format(\DateTime::ATOM),
-            'image' => [],
-            'text' => self::cleanStrings($article->getContent()), // TODO can I use the snippet instead?
-        ];
-        $author = $article->getAuthor();
-        $image = $article->getImage();
-
-        // TODO confirm that author is optional
-        if (!empty($author)) {
-            $schema['author'] = [
-                '@type' => 'Person',
-                'name' => $article->getAuthor(),
-            ];
-        }
-
-        if (!empty($image)) {
-            $schema['image'] = [
-                '@type' => 'ImageObject',
-                'url' => $webRoot.'/'.$image->getPath(), // TODO not sure this is correct
-                'width' => $image->getWidth(),
-                'height' => $image->getHeight(),
-            ];
-        }
-
-        // TODO try <script type="application/ld+json">{{ schema|json_encode|raw }}</script>
-        return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
     }
 
     #[Route('/tag/{tagSlug}', name: 'news_tag_listing')]
