@@ -5,7 +5,6 @@ namespace OHMedia\NewsBundle\Controller\Frontend;
 use Doctrine\ORM\QueryBuilder;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\MetaBundle\Entity\Meta;
-use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
@@ -88,7 +87,7 @@ class ArticleFrontendController extends AbstractController
         $tags = [];
         $qb = $this->getListingQueryBuilder($articleRepository);
 
-        //TODO tag listing can be seperated out. Seperate controller?
+        // TODO tag listing can be seperated out. Seperate controller?
         if ($this->areTagsEnabled()) {
             $tags = $this->getTags($articleTagRepository, $tagSlug);
 
@@ -124,6 +123,27 @@ class ArticleFrontendController extends AbstractController
         ]);
     }
 
+    #[Route('/rss', name: 'news_rss')]
+    public function rssFeed(
+        Request $request,
+        ArticleRepository $articleRepository
+    ): Response {
+        // TODO limit could be container param?
+        $limit = 10;
+
+        $articles = $articleRepository->createQueryBuilder('a')
+            ->where('a.publish_datetime IS NOT NULL')
+            ->orderBy('a.publish_datetime', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('@OHMediaNews/frontend/rss.html.twig', [
+            'articles' => $articles,
+            'web_root' => $request->getSchemeAndHttpHost(),
+        ]);
+    }
+
     #[Route('/{slug}', name: 'news_item')]
     public function item(
         Request $request,
@@ -154,4 +174,6 @@ class ArticleFrontendController extends AbstractController
             'web_root' => $request->getSchemeAndHttpHost(),
         ]);
     }
+
+
 }
