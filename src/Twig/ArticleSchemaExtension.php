@@ -17,8 +17,7 @@ class ArticleSchemaExtension extends AbstractExtension
         ];
     }
 
-    // TODO  Twig function? YES
-    public function schema(Article $article, string $webRoot): string
+    public function schema(Article $article, string $webRoot): array
     {
         $schema = [
             '@context' => 'https://schema.org',
@@ -49,8 +48,7 @@ class ArticleSchemaExtension extends AbstractExtension
             ];
         }
 
-        // TODO try <script type="application/ld+json">{{ schema|json_encode|raw }}</script>
-        return '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES).'</script>';
+        return $schema;
     }
 
     private function cleanStrings(string $string): string

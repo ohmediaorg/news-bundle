@@ -148,12 +148,10 @@ class ArticleFrontendController extends AbstractController
             ->setDescription($article->getSnippet())
             ->setAppendBaseTitle(true); // TODO not sure what this does
 
-        $schema = $this->schema($article, $request->getSchemeAndHttpHost());
-
         return $this->render('@OHMediaNews/article_item.html.twig', [
             'article' => $article,
             'meta_setting' => $meta,
-            'schema' => $schema,
+            'web_root' => $request->getSchemeAndHttpHost(),
         ]);
     }
 }
