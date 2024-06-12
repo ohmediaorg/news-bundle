@@ -7,6 +7,9 @@ services:
   OHMedia\NewsBundle\Twig\ArticleSchemaExtension:
         tags: ["twig.extension"]
 
+  OHMedia\NewsBundle\Twig\ArticleRssExtension:
+        tags: ["twig.extension"]
+
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
   OHMedia\NewsBundle\:

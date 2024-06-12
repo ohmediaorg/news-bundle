@@ -15,6 +15,7 @@
             {# TODO check  #}
             <link>{{ web_root }}/{{ path('news_item', {slug: article.slug}) }}</link>
             <description>{{ article.snippet }}</description>
+            {# TODO RSS format #}
             <pubDate>{{ article.getPublishDatetime|datetime }}</pubDate>
             {# TODO confirm this is correct #}
             <guid isPermaLink="false">{{article.id}}</guid>
