@@ -126,7 +126,7 @@ class ArticleFrontendController extends AbstractController
     #[Route('/rss', name: 'news_rss')]
     public function rssFeed(
         Request $request,
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
     ): Response {
         // TODO limit could be container param?
         $limit = 10;
@@ -141,7 +141,9 @@ class ArticleFrontendController extends AbstractController
         return $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
             'web_root' => $request->getSchemeAndHttpHost(),
-        ]);
+        ],
+            new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
+        );
     }
 
     #[Route('/{slug}', name: 'news_item')]
@@ -174,6 +176,4 @@ class ArticleFrontendController extends AbstractController
             'web_root' => $request->getSchemeAndHttpHost(),
         ]);
     }
-
-
 }
