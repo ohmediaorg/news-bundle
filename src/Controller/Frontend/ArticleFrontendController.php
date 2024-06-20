@@ -9,6 +9,7 @@ use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
+use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -79,7 +80,7 @@ class ArticleFrontendController extends AbstractController
         Paginator $paginator,
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository,
-        bool $enabledArticleTags,
+        bool $enabledArticleTags, //TODO ?
         string $tagSlug = ''
     ): Response {
         $searchForm = $this->getSearchForm($request);
@@ -127,9 +128,14 @@ class ArticleFrontendController extends AbstractController
     public function rssFeed(
         Request $request,
         ArticleRepository $articleRepository,
+        Settings $settings
     ): Response {
         // TODO limit could be container param?
         $limit = 10;
+
+        $rssSettings = Article::getRssSettings();
+
+        // TODO pass settings to view
 
         $articles = $articleRepository->createQueryBuilder('a')
             ->where('a.publish_datetime IS NOT NULL')

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OHMedia\NewsBundle\Entity\Article;
 
 #[Admin]
 class ArticleRssBackendController extends AbstractController
@@ -17,12 +18,9 @@ class ArticleRssBackendController extends AbstractController
     #[Route('/articles/rss', name: 'article_rss_settings')]
     public function settings(
         Request $request,
-        Settings $settings,
+        Settings $settings
     ): Response {
-        $rssSettings = [
-            'news_rss_title' => 'RSS Feed title',
-            'news_rss_desc' => 'RSS Feed Description',
-        ];
+        $rssSettings = Article::getRssSettings();
 
         // TODO voter
 

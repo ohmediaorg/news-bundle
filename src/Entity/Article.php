@@ -5,16 +5,19 @@ namespace OHMedia\NewsBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use OHMedia\FileBundle\Entity\File;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
-use Doctrine\ORM\Mapping as ORM;
 use OHMedia\SecurityBundle\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
     use BlameableTrait;
+
+    public const SETTING_RSS_TITLE = 'news_rss_title';
+    public const SETTING_RSS_DESC = 'news_rss_desc';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -200,6 +203,14 @@ class Article
 
     public function isScheduled(): bool
     {
-        return !$this->isDraft() &&  $this->publish_datetime > new \DateTime();
+        return !$this->isDraft() && $this->publish_datetime > new \DateTime();
+    }
+
+    public static function getRssSettings(): array
+    {
+        return [
+            self::SETTING_RSS_TITLE => 'RSS Feed title',
+            self::SETTING_RSS_DESC => 'RSS Feed Description',
+        ];
     }
 }
