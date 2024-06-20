@@ -19,16 +19,17 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
             return null;
         }
 
+        $nav = (new NavDropdown('Articles', 'article_index'))
+            ->setIcon('newspaper')
+            ->addLink(new NavLink('Articles', 'article_index'))
+            ->addDivider();
+
         if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
-            return (new NavDropdown('Articles', 'article_index'))
-                    ->setIcon('newspaper')
-                    ->addLink(new NavLink('Articles', 'article_index'))
-                    ->addLink(new NavLink('Tags', 'article_tag_index'));
-        } else {
-            return (new NavLink('Articles', 'article_index'))
-                ->setIcon('newspaper');
+            $nav->addLink(new NavLink('Tags', 'article_tag_index'));
         }
 
-        return null;
+        $nav->addLink(new NavLink('Settings', 'article_rss_settings'));
+
+        return $nav;
     }
 }

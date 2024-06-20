@@ -3,44 +3,54 @@
 namespace OHMedia\NewsBundle\Controller\Backend;
 
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
+use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Admin]
 class ArticleRssBackendController extends AbstractController
 {
-    #[Route('/articles/rss', name: 'article_rss_settings', methods: ['GET'])]
-    public function settings(): Response
-    {
-        // TODO You can use the Settings service from the settings-bundle to save these values
+    #[Route('/articles/rss', name: 'article_rss_settings')]
+    public function settings(
+        Request $request,
+        Settings $settings,
+    ): Response {
+        $rssSettings = [
+            'news_rss_title' => 'RSS Feed title',
+            'news_rss_desc' => 'RSS Feed Description',
+        ];
 
         // TODO voter
 
         $fb = $this->createFormBuilder();
 
-        $fb->add('title', TextType::class, [
-            'label' => 'RSS Title',
-            'data' => 'TODO',
-        ]);
+        foreach ($rssSettings as $id => $label) {
+            $fb->add($id, TextType::class, [
+                'label' => $label,
+                'data' => $settings->get($id),
+            ]);
+        }
 
-        $fb->add('desc', TextType::class, [
-            'label' => 'RSS Description',
-            'data' => 'TODO',
-        ]);
+        $fb->add('save', SubmitType::class);
 
         $form = $fb->getForm();
+
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
-            // TODO save the settings values
-            // $settings->set(SETTING_ID_HERE, $formData[FORM_FIELD_NAME_HERE]);
+            foreach ($rssSettings as $id => $label) {
+                $entity = $formData[$id];
+
+                $settings->set($id, $entity);
+            }
 
             $this->addFlash('notice', 'RSS settings updated successfully');
-
-            return $this->redirectToRoute('article_rss');
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_create.html.twig', [
