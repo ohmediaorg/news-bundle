@@ -11,12 +11,11 @@
         {% for article in articles %}
         <item>
             <title>{{ article.title }}</title>
-            {# TODO check  #}
             <link>{{ web_root }}{{ path('news_item', {slug: article.slug}) }}</link>
             <description>{{ article.snippet }}</description>
-            {# TODO RSS format #}
-            <pubDate>{{ article.getPublishDatetime|datetime }}</pubDate>
-            {# TODO confirm this is correct #}
+
+            <pubDate>{{ article.getPublishDatetime|date('r', 'America/Regina') }}</pubDate>
+
             <guid isPermaLink="false">{{article.id}}</guid>
         </item>
         {% endfor %}
