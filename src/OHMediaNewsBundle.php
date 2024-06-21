@@ -19,6 +19,9 @@ class OHMediaNewsBundle extends AbstractBundle
                 ->scalarNode('parent_path')
                     ->defaultValue('news')
                 ->end()
+                ->scalarNode('pagination_limit')
+                    ->defaultValue('news')
+                ->end()
             ->end();
     }
 
@@ -32,6 +35,7 @@ class OHMediaNewsBundle extends AbstractBundle
         $containerConfigurator->parameters()
             ->set('oh_media_news.article_tags', $config['article_tags'])
             ->set('oh_media_news.parent_path', $config['parent_path'])
+            ->set('oh_media_news.pagination_limit', intval($config['pagination_limit']))
         ;
     }
 }

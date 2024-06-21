@@ -81,6 +81,7 @@ class ArticleFrontendController extends AbstractController
         Paginator $paginator,
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository,
+        int $paginationLimit,
         string $tagSlug = ''
     ): Response {
         $searchForm = $this->getSearchForm($request);
@@ -116,7 +117,7 @@ class ArticleFrontendController extends AbstractController
         }
 
         return $this->render('@OHMediaNews/article_listing.html.twig', [
-            'pagination' => $paginator->paginate($qb, 8),
+            'pagination' => $paginator->paginate($qb, $paginationLimit),
             'tags' => $tags,
             'search_form' => $searchForm->createView(),
             'route_name' => $tagSlug ? 'news_tag_listing' : 'news_listing',
@@ -130,14 +131,12 @@ class ArticleFrontendController extends AbstractController
         ArticleRepository $articleRepository,
         Settings $settings,
         string $routePrefix,
+        int $paginationLimit,
     ): Response {
-        // TODO limit could be container param?
-        $limit = 10;
-
         $articles = $articleRepository->createQueryBuilder('a')
             ->where('a.publish_datetime IS NOT NULL')
             ->orderBy('a.publish_datetime', 'DESC')
-            ->setMaxResults($limit)
+            ->setMaxResults($paginationLimit)
             ->getQuery()
             ->getResult();
 

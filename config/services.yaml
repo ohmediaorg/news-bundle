@@ -22,3 +22,4 @@ services:
     bind:
       $enabledArticleTags: '%oh_media_news.article_tags%'
       $routePrefix: '%oh_media_news.parent_path%'
+      $paginationLimit: '%oh_media_news.pagination_limit%'
