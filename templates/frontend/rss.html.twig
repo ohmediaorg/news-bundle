@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-    {# TODO site name #}
-        <title>some where</title>
+
+        <title>{{ settings.title }}</title>
         <link>{{ web_root }}</link>
-        {# TODO site desc #}
-        <description>you </description>
+
+        <description>{{ settings.desc }}</description>
         <language>en-us</language>
         {# TODO dynamic rss url #}
         <atom:link href="{{ web_root }}/rss" rel="self" type="application/rss+xml" />

@@ -5,6 +5,7 @@ namespace OHMedia\NewsBundle\Controller\Frontend;
 use Doctrine\ORM\QueryBuilder;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\MetaBundle\Entity\Meta;
+use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
@@ -80,7 +81,7 @@ class ArticleFrontendController extends AbstractController
         Paginator $paginator,
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository,
-        bool $enabledArticleTags, //TODO ?
+        bool $enabledArticleTags, // TODO ?
         string $tagSlug = ''
     ): Response {
         $searchForm = $this->getSearchForm($request);
@@ -133,10 +134,6 @@ class ArticleFrontendController extends AbstractController
         // TODO limit could be container param?
         $limit = 10;
 
-        $rssSettings = Article::getRssSettings();
-
-        // TODO pass settings to view
-
         $articles = $articleRepository->createQueryBuilder('a')
             ->where('a.publish_datetime IS NOT NULL')
             ->orderBy('a.publish_datetime', 'DESC')
@@ -147,6 +144,10 @@ class ArticleFrontendController extends AbstractController
         return $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
             'web_root' => $request->getSchemeAndHttpHost(),
+            'settings' => [
+                'title' => $settings->get(Article::SETTING_RSS_TITLE),
+                'desc' => $settings->get(Article::SETTING_RSS_DESC),
+            ],
         ],
             new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );
