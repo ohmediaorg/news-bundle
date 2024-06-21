@@ -81,7 +81,6 @@ class ArticleFrontendController extends AbstractController
         Paginator $paginator,
         ArticleRepository $articleRepository,
         ArticleTagRepository $articleTagRepository,
-        bool $enabledArticleTags, // TODO ?
         string $tagSlug = ''
     ): Response {
         $searchForm = $this->getSearchForm($request);
