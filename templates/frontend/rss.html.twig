@@ -7,13 +7,12 @@
 
         <description>{{ settings.desc }}</description>
         <language>en-us</language>
-        {# TODO dynamic rss url #}
-        <atom:link href="{{ web_root }}/rss" rel="self" type="application/rss+xml" />
+        <atom:link href="{{ web_root }}{{routePrefix}}/rss" rel="self" type="application/rss+xml" />
         {% for article in articles %}
         <item>
             <title>{{ article.title }}</title>
             {# TODO check  #}
-            <link>{{ web_root }}/{{ path('news_item', {slug: article.slug}) }}</link>
+            <link>{{ web_root }}{{ path('news_item', {slug: article.slug}) }}</link>
             <description>{{ article.snippet }}</description>
             {# TODO RSS format #}
             <pubDate>{{ article.getPublishDatetime|datetime }}</pubDate>

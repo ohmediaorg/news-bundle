@@ -21,3 +21,4 @@ services:
       # TODO delete parent path here
     bind:
       $enabledArticleTags: '%oh_media_news.article_tags%'
+      $routePrefix: '%oh_media_news.parent_path%'

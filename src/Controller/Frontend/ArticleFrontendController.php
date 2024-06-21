@@ -129,7 +129,8 @@ class ArticleFrontendController extends AbstractController
     public function rssFeed(
         Request $request,
         ArticleRepository $articleRepository,
-        Settings $settings
+        Settings $settings,
+        string $routePrefix,
     ): Response {
         // TODO limit could be container param?
         $limit = 10;
@@ -148,6 +149,7 @@ class ArticleFrontendController extends AbstractController
                 'title' => $settings->get(Article::SETTING_RSS_TITLE),
                 'desc' => $settings->get(Article::SETTING_RSS_DESC),
             ],
+            'routePrefix' => $routePrefix,
         ],
             new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );
