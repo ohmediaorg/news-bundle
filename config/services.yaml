@@ -17,9 +17,10 @@ services:
     exclude:
       - '../src/Entity/'
       - '../src/OHMediaNewsBundle.php'
-      # Bind speific to voter?
-      # TODO delete parent path here
     bind:
-      $enabledArticleTags: '%oh_media_news.article_tags%'
       $routePrefix: '%oh_media_news.parent_path%'
       $paginationLimit: '%oh_media_news.pagination_limit%'
+
+  OHMedia\NewsBundle\Security\Voter\ArticleTagVoter:
+    arguments:
+      $enabledArticleTags: '%oh_media_news.article_tags%'
