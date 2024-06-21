@@ -16,7 +16,7 @@ class ArticleTagVoter extends AbstractEntityVoter
     public const EDIT = 'edit';
     public const DELETE = 'delete';
 
-    public function __construct(bool $enabledArticleTags)
+    public function __construct(private bool $enabledArticleTags)
     {
         $this->enabledArticleTags = $enabledArticleTags;
     }
