@@ -21,9 +21,6 @@ class ArticleRssBackendController extends AbstractController
         Settings $settings
     ): Response {
         $rssSettings = Article::getRssSettings();
-
-        // TODO voter
-
         $fb = $this->createFormBuilder();
 
         foreach ($rssSettings as $id => $label) {
