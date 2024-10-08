@@ -1,6 +1,6 @@
 <?php
 
-namespace OHMedia\NewsBundle\Controller\Backend;
+namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\SettingsBundle\Service\Settings;
