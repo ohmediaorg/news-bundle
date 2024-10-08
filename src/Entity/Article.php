@@ -9,12 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use OHMedia\FileBundle\Entity\File;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
-use OHMedia\SecurityBundle\Entity\Traits\BlameableTrait;
+use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
-    use BlameableTrait;
+    use BlameableEntityTrait;
 
     public const SETTING_RSS_TITLE = 'news_rss_title';
     public const SETTING_RSS_DESC = 'news_rss_desc';
