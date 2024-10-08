@@ -8,3 +8,7 @@ services:
         exclude:
             - '../src/Entity/'
             - '../src/OHMediaNewsBundle.php'
+
+    OHMedia\NewsBundle\Security\Voter\ArticleTagVoter:
+      arguments:
+        $enabledArticleTags: '%oh_media_news.article_tags%'
