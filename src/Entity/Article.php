@@ -23,22 +23,25 @@ class Article implements SluggableEntityInterface
 
     public const SETTING_RSS_TITLE = 'news_rss_title';
     public const SETTING_RSS_DESC = 'news_rss_desc';
-    // TODO add validation
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $snippet = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $content = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

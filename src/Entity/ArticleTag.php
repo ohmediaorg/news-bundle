@@ -24,6 +24,7 @@ class ArticleTag implements SluggableEntityInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     /**

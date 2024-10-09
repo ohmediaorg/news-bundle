@@ -101,7 +101,7 @@ class ArticleTagBackendController extends AbstractController
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);
-        // TODO Q - Do we want to avoid duplicated code on these methods?
+
         if ($form->isSubmitted()) {
             $this->setSlug($articleTag);
 
