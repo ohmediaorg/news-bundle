@@ -2,23 +2,28 @@
 
 namespace OHMedia\NewsBundle\Controller;
 
+use OHMedia\BackendBundle\Routing\Attribute\Admin;
+use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleTagType;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
-use OHMedia\BackendBundle\Routing\Attribute\Admin;
-use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\UtilityBundle\Form\DeleteType;
+use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
 class ArticleTagBackendController extends AbstractController
 {
+    public function __construct(
+        private EntitySlugger $entitySlugger,
+    ) {
+    }
+
     #[Route('/articles/tags', name: 'article_tag_index', methods: ['GET'])]
     public function index(
         ArticleTagRepository $articleTagRepository,
@@ -48,7 +53,6 @@ class ArticleTagBackendController extends AbstractController
         ArticleTagRepository $articleTagRepository
     ): Response {
         $articleTag = new ArticleTag();
-        $slug = $articleTag->getSlug();
 
         $this->denyAccessUnlessGranted(
             ArticleTagVoter::CREATE,
@@ -62,18 +66,16 @@ class ArticleTagBackendController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if(! $slug){
-                $articleTag->setSlug(
-                    $this->buildSlug($articleTagRepository, $articleTag->getId(), $articleTag->getName())
-                );
+        if ($form->isSubmitted()) {
+            $this->setSlug($articleTag);
+
+            if ($form->isValid()) {
+                $articleTagRepository->save($articleTag, true);
+
+                $this->addFlash('notice', 'The article tag was created successfully.');
+
+                return $this->redirectToRoute('article_tag_index');
             }
-
-            $articleTagRepository->save($articleTag, true);
-
-            $this->addFlash('notice', 'The article tag was created successfully.');
-
-            return $this->redirectToRoute('article_tag_index');
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_create.html.twig', [
@@ -94,27 +96,24 @@ class ArticleTagBackendController extends AbstractController
             'You cannot edit this article tag.'
         );
 
-        $slug = $articleTag->getSlug();
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);
-        //TODO Q - Do we want to avoid duplicated code on these methods?
-        if ($form->isSubmitted() && $form->isValid()) {
-            if(! $slug){
-                $articleTag->setSlug(
-                    $this->buildSlug($articleTagRepository, $articleTag->getId(), $articleTag->getName())
-                );
+        // TODO Q - Do we want to avoid duplicated code on these methods?
+        if ($form->isSubmitted()) {
+            $this->setSlug($articleTag);
+
+            if ($form->isValid()) {
+                $articleTagRepository->save($articleTag, true);
+
+                $this->addFlash('notice', 'The article tag was updated successfully.');
+
+                return $this->redirectToRoute('article_tag_index', [
+                    'id' => $articleTag->getId(),
+                ]);
             }
-
-            $articleTagRepository->save($articleTag, true);
-
-            $this->addFlash('notice', 'The article tag was updated successfully.');
-
-            return $this->redirectToRoute('article_tag_index', [
-                'id' => $articleTag->getId(),
-            ]);
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_edit.html.twig', [
@@ -155,6 +154,11 @@ class ArticleTagBackendController extends AbstractController
         ]);
     }
 
+    private function setSlug(ArticleTag $articleTag): void
+    {
+        $this->entitySlugger->setSlug($articleTag, $articleTag->getName());
+    }
+
     private function getAttributes(): array
     {
         return [
@@ -163,21 +167,5 @@ class ArticleTagBackendController extends AbstractController
             'delete' => ArticleTagVoter::DELETE,
             'edit' => ArticleTagVoter::EDIT,
         ];
-    }
-
-    // TODO - This is outdated
-    private function buildSlug(ArticleTagRepository $articleTagRepository, ?int $id, string $name): string
-    {
-        $slugger = new AsciiSlugger();
-        $slug = $slugger->slug($name);
-
-        $i = 1;
-        while ($articleTagRepository->countBySlug($slug, $id)) {
-            $slug = $slugger->slug($name.'-'.$i);
-
-            ++$i;
-        }
-
-        return $slug;
     }
 }

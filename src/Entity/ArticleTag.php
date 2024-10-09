@@ -7,11 +7,16 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
+use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
+use OHMedia\UtilityBundle\Entity\SluggableEntityTrait;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ArticleTagRepository::class)]
-class ArticleTag
+#[UniqueEntity('slug')]
+class ArticleTag implements SluggableEntityInterface
 {
     use BlameableEntityTrait;
+    use SluggableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,9 +25,6 @@ class ArticleTag
 
     #[ORM\Column(length: 100)]
     private ?string $name = null;
-
-    #[ORM\Column(length: 100, unique: true)]
-    private ?string $slug = null;
 
     /**
      * @var Collection<int, Article>
@@ -54,18 +56,6 @@ class ArticleTag
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = strtolower($slug);
 
         return $this;
     }

@@ -10,11 +10,16 @@ use OHMedia\FileBundle\Entity\File;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
+use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
+use OHMedia\UtilityBundle\Entity\SluggableEntityTrait;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
-class Article
+#[UniqueEntity('slug')]
+class Article implements SluggableEntityInterface
 {
     use BlameableEntityTrait;
+    use SluggableEntityTrait;
 
     public const SETTING_RSS_TITLE = 'news_rss_title';
     public const SETTING_RSS_DESC = 'news_rss_desc';
@@ -26,9 +31,6 @@ class Article
 
     #[ORM\Column(length: 100)]
     private ?string $title = null;
-
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $author = null;
@@ -79,18 +81,6 @@ class Article
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = strtolower($slug);
 
         return $this;
     }

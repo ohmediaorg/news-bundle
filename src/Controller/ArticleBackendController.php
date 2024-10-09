@@ -9,16 +9,21 @@ use OHMedia\NewsBundle\Form\ArticleType;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleVoter;
 use OHMedia\UtilityBundle\Form\DeleteType;
+use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Admin]
 class ArticleBackendController extends AbstractController
 {
+    public function __construct(
+        private EntitySlugger $entitySlugger,
+    ) {
+    }
+
     #[Route('/articles', name: 'article_index', methods: ['GET'])]
     public function index(
         ArticleRepository $articleRepository,
@@ -49,7 +54,6 @@ class ArticleBackendController extends AbstractController
         ArticleRepository $articleRepository
     ): Response {
         $article = new Article();
-        $oldSlug = $article->getSlug();
 
         $this->denyAccessUnlessGranted(
             ArticleVoter::CREATE,
@@ -63,20 +67,16 @@ class ArticleBackendController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $article->getSlug() ?: $article->getTitle();
+        if ($form->isSubmitted()) {
+            $this->setSlug($article);
 
-            if ($slug !== $oldSlug) {
-                $article->setSlug(
-                    $this->buildSlug($articleRepository, $article->getId(), $slug)
-                );
+            if ($form->isValid()) {
+                $articleRepository->save($article, true);
+
+                $this->addFlash('notice', 'The article was created successfully.');
+
+                return $this->redirectToRoute('article_index');
             }
-
-            $articleRepository->save($article, true);
-
-            $this->addFlash('notice', 'The article was created successfully.');
-
-            return $this->redirectToRoute('article_index');
         }
 
         return $this->render('@OHMediaNews/backend/article/article_create.html.twig', [
@@ -96,29 +96,25 @@ class ArticleBackendController extends AbstractController
             $article,
             'You cannot edit this article.'
         );
-        $oldSlug = $article->getSlug();
+
         $form = $this->createForm(ArticleType::class, $article);
 
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $article->getSlug() ?: $article->getTitle();
+        if ($form->isSubmitted()) {
+            $this->setSlug($article);
 
-            if ($slug !== $oldSlug) {
-                $article->setSlug(
-                    $this->buildSlug($articleRepository, $article->getId(), $slug)
-                );
+            if ($form->isValid()) {
+                $articleRepository->save($article, true);
+
+                $this->addFlash('notice', 'The article was updated successfully.');
+
+                return $this->redirectToRoute('article_index', [
+                    'id' => $article->getId(),
+                ]);
             }
-
-            $articleRepository->save($article, true);
-
-            $this->addFlash('notice', 'The article was updated successfully.');
-
-            return $this->redirectToRoute('article_index', [
-                'id' => $article->getId(),
-            ]);
         }
 
         return $this->render('@OHMediaNews/backend/article/article_edit.html.twig', [
@@ -159,6 +155,11 @@ class ArticleBackendController extends AbstractController
         ]);
     }
 
+    private function setSlug(Article $article): void
+    {
+        $this->entitySlugger->setSlug($article, $article->getTitle());
+    }
+
     private function getAttributes(): array
     {
         return [
@@ -167,21 +168,5 @@ class ArticleBackendController extends AbstractController
             'delete' => ArticleVoter::DELETE,
             'edit' => ArticleVoter::EDIT,
         ];
-    }
-
-    // TODO we have a util for this now
-    private function buildSlug(ArticleRepository $articleRepository, ?int $id, string $name): string
-    {
-        $slugger = new AsciiSlugger();
-        $slug = $slugger->slug($name);
-
-        $i = 1;
-        while ($articleRepository->countBySlug($slug, $id)) {
-            $slug = $slugger->slug($name.'-'.$i);
-
-            ++$i;
-        }
-
-        return $slug;
     }
 }

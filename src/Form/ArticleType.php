@@ -21,12 +21,6 @@ class ArticleType extends AbstractType
         $article = $options['data'];
 
         $builder->add('title');
-        // TODO delete this
-        $builder->add('slug', null, [
-            'required' => false,
-            'help' => 'Leave blank to auto-generate',
-            'empty_data' => '',
-        ]);
 
         $builder->add('author', null, [
             'required' => false,
