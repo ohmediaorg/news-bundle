@@ -8,7 +8,7 @@ use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Form\ArticleType;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleVoter;
-use OHMedia\SecurityBundle\Form\DeleteType;
+use OHMedia\UtilityBundle\Form\DeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
