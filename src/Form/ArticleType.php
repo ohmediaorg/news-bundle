@@ -16,6 +16,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticleType extends AbstractType
 {
+    public function __construct(
+        private string $enabledArticleTags,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $article = $options['data'];
@@ -39,14 +44,14 @@ class ArticleType extends AbstractType
             'data' => $article->getImage(),
         ]);
 
-        // TODO if tags are enabled
-
-        $builder->add('tags', EntityType::class, [
-            'required' => false,
-            'class' => ArticleTag::class,
-            'multiple' => true,
-            'expanded' => true,
-        ]);
+        if ($this->enabledArticleTags) {
+            $builder->add('tags', EntityType::class, [
+                'required' => false,
+                'class' => ArticleTag::class,
+                'multiple' => true,
+                'expanded' => true,
+            ]);
+        }
 
         $builder->add('meta', MetaEntityType::class, [
             'data' => $article->getMeta(),
