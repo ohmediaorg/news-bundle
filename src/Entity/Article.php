@@ -18,7 +18,7 @@ class Article
 
     public const SETTING_RSS_TITLE = 'news_rss_title';
     public const SETTING_RSS_DESC = 'news_rss_desc';
-
+    // TODO add validation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
