@@ -20,15 +20,24 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
         }
 // TODO breadcrumbs are incorrect within the settings
         $nav = (new NavDropdown('Articles', 'article_index'))
-            ->setIcon('newspaper')
-            ->addLink(new NavLink('Articles', 'article_index'))
-            ->addDivider();
+            ->setIcon('newspaper');
+
+        $articles = new NavLink('Articles', 'article_index');
+        $articles->setIcon('newspaper');
+
+        $nav->addLink($articles);
 
         if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
-            $nav->addLink(new NavLink('Tags', 'article_tag_index'));
+            $tags = new NavLink('Tags', 'article_tag_index');
+            $tags->setIcon('tag');
+
+            $nav->addLink($tags);
         }
 
-        $nav->addLink(new NavLink('Settings', 'article_rss_settings'));
+        $settings = new NavLink('Settings', 'article_rss_settings');
+        $settings->setIcon('gear-fill');
+
+        $nav->addLink($settings);
 
         return $nav;
     }
