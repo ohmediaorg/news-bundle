@@ -13,6 +13,7 @@ class ArticleEntityChoice implements EntityChoiceInterface
         return 'Articles';
     }
 
+    // TODO - might want seperate permissions
     public function getEntities(): array
     {
         return [
