@@ -18,7 +18,7 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
         if (!$this->isGranted(ArticleVoter::INDEX, new Article())) {
             return null;
         }
-// TODO breadcrumbs are incorrect within the settings
+
         $nav = (new NavDropdown('Articles', 'article_index'))
             ->setIcon('newspaper');
 

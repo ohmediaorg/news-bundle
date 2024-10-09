@@ -3,6 +3,7 @@
 namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
+use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -10,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use OHMedia\NewsBundle\Entity\Article;
 
 #[Admin]
 class ArticleRssBackendController extends AbstractController
@@ -48,7 +48,7 @@ class ArticleRssBackendController extends AbstractController
             $this->addFlash('notice', 'RSS settings updated successfully');
         }
 
-        return $this->render('@OHMediaNews/backend/article_tag/article_tag_create.html.twig', [
+        return $this->render('@OHMediaNews/backend/rss.html.twig', [
             'form' => $form->createView(),
         ]);
     }
