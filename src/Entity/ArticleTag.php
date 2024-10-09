@@ -30,7 +30,6 @@ class ArticleTag implements SluggableEntityInterface
     /**
      * @var Collection<int, Article>
      */
-    // TODO - This is casusing an error when attempting to delete?
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'tags')]
     private Collection $articles;
 

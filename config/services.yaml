@@ -2,13 +2,11 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+          $enabledArticleTags: '%oh_media_news.article_tags%'
 
     OHMedia\NewsBundle\:
         resource: '../src/'
         exclude:
             - '../src/Entity/'
             - '../src/OHMediaNewsBundle.php'
-
-    OHMedia\NewsBundle\Security\Voter\ArticleTagVoter:
-      arguments:
-        $enabledArticleTags: '%oh_media_news.article_tags%'
