@@ -57,7 +57,7 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     protected function canDelete(ArticleTag $articleTag, User $loggedIn): bool
     {
-        // TODO check if relations exist first?
-        return $this->enabledArticleTags;
+        return $this->enabledArticleTags
+            && 0 === sizeof($articleTag->getArticles());
     }
 }
