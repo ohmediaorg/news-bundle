@@ -9,7 +9,7 @@
         <language>en-us</language>
         {# TODO #}
         <atom:link href="/rss" rel="self" type="application/rss+xml" />
-        {% for article in articles %}
+        {# {% for article in articles %}
         <item>
             <title>{{ article.title }}</title>
             <link>{{ web_root }}{{ path('news_item', {slug: article.slug}) }}</link>
@@ -19,6 +19,6 @@
 
             <guid isPermaLink="false">{{article.id}}</guid>
         </item>
-        {% endfor %}
+        {% endfor %} #}
     </channel>
 </rss>
