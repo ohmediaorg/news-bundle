@@ -2,20 +2,20 @@
 
 namespace OHMedia\NewsBundle\Service;
 
-use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\SecurityBundle\Service\EntityChoiceInterface;
 
-class ArticleEntityChoice implements EntityChoiceInterface
+class ArticleTagEntityChoice implements EntityChoiceInterface
 {
     public function getLabel(): string
     {
-        return 'Articles';
+        return 'Article Tags';
     }
 
     public function getEntities(): array
     {
         return [
-            Article::class,
+            ArticleTag::class,
         ];
     }
 }
