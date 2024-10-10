@@ -5,8 +5,10 @@ namespace OHMedia\NewsBundle\Controller;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleType;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
+use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use OHMedia\NewsBundle\Security\Voter\ArticleVoter;
 use OHMedia\UtilityBundle\Form\DeleteType;
 use OHMedia\UtilityBundle\Service\EntitySlugger;
@@ -30,6 +32,7 @@ class ArticleBackendController extends AbstractController
         Paginator $paginator
     ): Response {
         $newArticle = new Article();
+        $newArticleTag = new ArticleTag();
 
         $this->denyAccessUnlessGranted(
             ArticleVoter::INDEX,
@@ -44,6 +47,7 @@ class ArticleBackendController extends AbstractController
         return $this->render('@OHMediaNews/backend/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
             'new_article' => $newArticle,
+            'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
         ]);
     }
@@ -167,6 +171,7 @@ class ArticleBackendController extends AbstractController
             'create' => ArticleVoter::CREATE,
             'delete' => ArticleVoter::DELETE,
             'edit' => ArticleVoter::EDIT,
+            'view_tags' => ArticleTagVoter::VIEW,
         ];
     }
 }
