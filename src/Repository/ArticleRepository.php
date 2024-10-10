@@ -7,6 +7,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\TimezoneBundle\Util\DateTimeUtil;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,5 +49,21 @@ class ArticleRepository extends ServiceEntityRepository
             ->setParameter('now', DateTimeUtil::getDateTimeUtc());
     }
 
-    // TODO containsWysiwygShortcodes
+    public function containsWysiwygShortcodes(string ...$shortcodes): bool
+    {
+        $ors = [];
+        $params = new ArrayCollection();
+
+        foreach ($shortcodes as $i => $shortcode) {
+            $ors[] = 'a.content LIKE :shortcode_'.$i;
+            $params[] = new Parameter('shortcode_'.$i, '%'.$shortcode.'%');
+        }
+
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a)')
+            ->where(implode(' OR ', $ors))
+            ->setParameters($params)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
 }
