@@ -2,9 +2,11 @@
 
 namespace OHMedia\NewsBundle\Repository;
 
-use OHMedia\NewsBundle\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\TimezoneBundle\Util\DateTimeUtil;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -37,7 +39,13 @@ class ArticleRepository extends ServiceEntityRepository
         }
     }
 
-    // TODO get published articles
+    public function getPublishedArticles(): QueryBuilder
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.publish_datetime IS NOT NULL')
+            ->andWhere('a.publish_datetime <= :now')
+            ->setParameter('now', DateTimeUtil::getDateTimeUtc());
+    }
 
     // TODO containsWysiwygShortcodes
 }
