@@ -7,18 +7,17 @@
 
         <description>{{ settings.desc }}</description>
         <language>en-us</language>
-        {# TODO #}
-        <atom:link href="/rss" rel="self" type="application/rss+xml" />
-        {# {% for article in articles %}
+        <atom:link href="{{ feed_url }}" rel="self" type="application/rss+xml" />
+        {% for article in articles %}
         <item>
             <title>{{ article.title }}</title>
-            <link>{{ web_root }}{{ path('news_item', {slug: article.slug}) }}</link>
+            <link>{{ article.link }}</link>
             <description>{{ article.snippet }}</description>
 
-            <pubDate>{{ article.getPublishDatetime|date('r', 'America/Regina') }}</pubDate>
+            <pubDate>{{ article.datetime|date('r', 'America/Regina') }}</pubDate>
 
             <guid isPermaLink="false">{{article.id}}</guid>
         </item>
-        {% endfor %} #}
+        {% endfor %}
     </channel>
 </rss>
