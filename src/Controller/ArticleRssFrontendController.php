@@ -29,6 +29,7 @@ class ArticleRssFrontendController extends AbstractController
         $path = '/news';
         $webRoot = $request->getSchemeAndHttpHost();
         // $pagePath = $this->pageRawQuery->getPathWithShortcode('blog()');
+        // onDynamicPageEvent ?
 
         $articles = [];
         foreach ($articleEntities as $entity) {
@@ -40,6 +41,8 @@ class ArticleRssFrontendController extends AbstractController
                 'datetime' => $entity->getPublishDatetime(),
             ];
         }
+
+        ///TODO feed URL ? $this->pageRenderer->getCurrentPage()->getPath();
 
         return $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
