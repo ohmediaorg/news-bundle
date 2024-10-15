@@ -1,5 +1,5 @@
 <?php
-// TODO sitemap service provider?
+
 namespace OHMedia\NewsBundle\Security\Voter;
 
 use OHMedia\NewsBundle\Entity\Article;
