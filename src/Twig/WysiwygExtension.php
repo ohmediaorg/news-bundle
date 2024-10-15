@@ -55,8 +55,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
 
         $dynamicPart = $this->pageRenderer->getDynamicPart();
 
-        $qb = $this->articleRepository->getFrontendQueryBuilder();
-        $qb->andWhere('e.slug = :slug');
+        $qb = $this->articleRepository->getPublishedArticles();
+        $qb->andWhere('a.slug = :slug');
         $qb->setParameter('slug', $dynamicPart);
         $qb->setMaxResults(1);
 
@@ -95,7 +95,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
         if ($this->articleEntity) {
             $content = $twig->render('@OHMediaNews/news_item.html.twig', [
                 'article' => $this->articleEntity,
-                'articles_page_path' => $pagePath,
+                'news_page_path' => $pagePath,
             ]);
 
             $content .= $this->getSchema($this->articleEntity);
