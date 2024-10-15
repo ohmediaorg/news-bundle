@@ -4,6 +4,7 @@ namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
+use OHMedia\PageBundle\Service\PageRawQuery;
 use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ class ArticleRssFrontendController extends AbstractController
         Request $request,
         ArticleRepository $articleRepository,
         Settings $settings,
+        PageRawQuery $pageRawQuery,
     ): Response {
         // Arbitrary limit to keep the feed manageable
         $feedLimit = 20;
@@ -25,11 +27,13 @@ class ArticleRssFrontendController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // TODO
-        $path = '/news';
         $webRoot = $request->getSchemeAndHttpHost();
-        // $pagePath = $this->pageRawQuery->getPathWithShortcode('blog()');
-        // onDynamicPageEvent ?
+        $parent = $pageRawQuery->getPathWithShortcode('news()');
+
+        // News not active on the site
+        if (!$parent) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
 
         $articles = [];
         foreach ($articleEntities as $entity) {
@@ -37,12 +41,10 @@ class ArticleRssFrontendController extends AbstractController
                 'id' => $entity->getId(),
                 'title' => $entity->getTitle(),
                 'snippet' => $entity->getSnippet(),
-                'link' => $webRoot.$path.'/'.$entity->getSlug(),
+                'link' => $webRoot.'/'.$parent.'/'.$entity->getSlug(),
                 'datetime' => $entity->getPublishDatetime(),
             ];
         }
-
-        ///TODO feed URL ? $this->pageRenderer->getCurrentPage()->getPath();
 
         return $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
@@ -51,7 +53,7 @@ class ArticleRssFrontendController extends AbstractController
                 'title' => $settings->get(Article::SETTING_RSS_TITLE),
                 'desc' => $settings->get(Article::SETTING_RSS_DESC),
             ],
-            'feed_url' => $webRoot.$path.'/rss',
+            'feed_url' => $webRoot.'/news/rss',
         ],
             new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );
