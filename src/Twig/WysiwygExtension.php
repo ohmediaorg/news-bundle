@@ -110,7 +110,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
             'news_page_path' => $pagePath,
         ]);
     }
-    // TODO validate
+
     private function getSchema(Article $article): string
     {
         $schema = [
