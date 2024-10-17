@@ -48,6 +48,7 @@
         <thead>
           <tr>
             <th>Title</th>
+            <th>Tags</th>
             <th>Author</th>
             <th>Status</th>
             <th>Publish Date</th>
@@ -59,6 +60,11 @@
           {% for article in pagination.results %}
           <tr>
             <td>{{ article.title }}</td>
+            <td>
+              {% for tag in article.getTags %}
+                {{ bootstrap_badge_info(tag.name) }} <br>
+              {% endfor %}
+            </td>
             <td>{{ article.author }}</td>
             <td>
               {% if article.isPublished %}
