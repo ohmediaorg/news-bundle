@@ -13,6 +13,7 @@ class ArticleVoter extends AbstractEntityVoter
     public const VIEW = 'view';
     public const EDIT = 'edit';
     public const DELETE = 'delete';
+    public const SETTINGS = 'settings';
 
     protected function getAttributes(): array
     {
@@ -22,6 +23,7 @@ class ArticleVoter extends AbstractEntityVoter
             self::VIEW,
             self::EDIT,
             self::DELETE,
+            self::SETTINGS,
         ];
     }
 
@@ -51,6 +53,11 @@ class ArticleVoter extends AbstractEntityVoter
     }
 
     protected function canDelete(Article $article, User $loggedIn): bool
+    {
+        return true;
+    }
+
+    protected function canSettings(Article $article, User $loggedIn): bool
     {
         return true;
     }

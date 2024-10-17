@@ -4,6 +4,7 @@ namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Security\Voter\ArticleVoter;
 use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,6 +21,14 @@ class ArticleRssBackendController extends AbstractController
         Request $request,
         Settings $settings
     ): Response {
+        $newArticle = new Article();
+
+        $this->denyAccessUnlessGranted(
+            ArticleVoter::SETTINGS,
+            $newArticle,
+            'You cannot access the article settings.'
+        );
+
         $fb = $this->createFormBuilder();
 
         $fb->add(Article::SETTING_RSS_TITLE, TextType::class, [
