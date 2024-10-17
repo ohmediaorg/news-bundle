@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ArticleRssFrontendController extends AbstractController
 {
@@ -19,6 +20,7 @@ class ArticleRssFrontendController extends AbstractController
         ArticleRepository $articleRepository,
         Settings $settings,
         PageRawQuery $pageRawQuery,
+        UrlGeneratorInterface $urlGenerator,
     ): Response {
         // Arbitrary limit to keep the feed manageable
         $feedLimit = 20;
@@ -37,11 +39,17 @@ class ArticleRssFrontendController extends AbstractController
 
         $articles = [];
         foreach ($articleEntities as $entity) {
+            $url = $urlGenerator->generate(
+                'oh_media_page_frontend',
+                ['path' => '/'.$parent.'/'.$entity->getSlug()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
             $articles[] = [
                 'id' => $entity->getId(),
                 'title' => $entity->getTitle(),
                 'snippet' => $entity->getSnippet(),
-                'link' => $webRoot.'/'.$parent.'/'.$entity->getSlug(),
+                'link' => $url,
                 'datetime' => $entity->getPublishDatetime(),
             ];
         }
@@ -53,7 +61,6 @@ class ArticleRssFrontendController extends AbstractController
                 'title' => $settings->get(Article::SETTING_RSS_TITLE),
                 'desc' => $settings->get(Article::SETTING_RSS_DESC),
             ],
-            'feed_url' => $webRoot.'/news/rss',
         ],
             new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );

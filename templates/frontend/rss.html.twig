@@ -7,7 +7,7 @@
 
         <description>{{ settings.desc }}</description>
         <language>en-us</language>
-        <atom:link href="{{ feed_url }}" rel="self" type="application/rss+xml" />
+        <atom:link href="{{ absolute_url(path('news_rss')) }}" rel="self" type="application/rss+xml" />
         {% for article in articles %}
         <item>
             <title>{{ article.title }}</title>
