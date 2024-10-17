@@ -60,6 +60,11 @@ class ArticleTag implements SluggableEntityInterface
         return $this;
     }
 
+    public function getArticleCount(): int
+    {
+        return $this->articles->count();
+    }
+
     /**
      * @return Collection<int, Article>
      */
