@@ -19,7 +19,6 @@ class ArticleTagVoter extends AbstractEntityVoter
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags
     ) {
-        $this->enabledArticleTags = $enabledArticleTags;
     }
 
     protected function getAttributes(): array
