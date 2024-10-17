@@ -2,8 +2,7 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        bind:
-          $enabledArticleTags: '%oh_media_news.article_tags%'
+
 
     OHMedia\NewsBundle\:
         resource: '../src/'

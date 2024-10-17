@@ -5,6 +5,7 @@ namespace OHMedia\NewsBundle\Security\Voter;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\SecurityBundle\Entity\User;
 use OHMedia\SecurityBundle\Security\Voter\AbstractEntityVoter;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ArticleTagVoter extends AbstractEntityVoter
 {
@@ -14,8 +15,10 @@ class ArticleTagVoter extends AbstractEntityVoter
     public const EDIT = 'edit';
     public const DELETE = 'delete';
 
-    public function __construct(private bool $enabledArticleTags)
-    {
+    public function __construct(
+        #[Autowire('%oh_media_news.article_tags%')]
+        private bool $enabledArticleTags
+    ) {
         $this->enabledArticleTags = $enabledArticleTags;
     }
 
