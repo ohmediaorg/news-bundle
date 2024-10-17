@@ -57,7 +57,6 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     protected function canDelete(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags
-            && 0 === sizeof($articleTag->getArticles());
+        return $this->enabledArticleTags;
     }
 }
