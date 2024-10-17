@@ -19,7 +19,7 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
             return null;
         }
 
-        $nav = (new NavDropdown('Articles', 'article_index'))
+        $nav = (new NavDropdown('Articles'))
             ->setIcon('newspaper');
 
         $articles = new NavLink('Articles', 'article_index');
