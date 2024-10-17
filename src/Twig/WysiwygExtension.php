@@ -7,10 +7,12 @@ use OHMedia\FileBundle\Service\FileManager;
 use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
+use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\PageBundle\Event\DynamicPageEvent;
 use OHMedia\PageBundle\Service\PageRenderer;
 use OHMedia\SettingsBundle\Service\Settings;
 use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,6 +34,9 @@ class WysiwygExtension extends AbstractWysiwygExtension
         private Settings $settings,
         private UrlHelper $urlHelper,
         private UrlGeneratorInterface $urlGenerator,
+        private ArticleTagRepository $articleTagRepository,
+        #[Autowire('%oh_media_news.article_tags%')]
+        private bool $enabledArticleTags,
     ) {
     }
 
@@ -88,8 +93,9 @@ class WysiwygExtension extends AbstractWysiwygExtension
         );
     }
 
-    public function news(Environment $twig): string
-    {
+    public function news(
+        Environment $twig,
+    ): string {
         if ($this->rendered) {
             return '';
         }
@@ -111,9 +117,19 @@ class WysiwygExtension extends AbstractWysiwygExtension
 
         $qb = $this->articleRepository->getPublishedArticles();
 
+        $tags = null;
+        if ($this->enabledArticleTags) {
+            $tags = $this->articleTagRepository->createQueryBuilder('at')
+                ->select('at')
+                ->innerJoin('at.articles', 'a')
+                ->getQuery()
+                ->getResult();
+        }
+
         return $twig->render('@OHMediaNews/news_listing.html.twig', [
             'pagination' => $this->paginator->paginate($qb, 12),
             'news_page_path' => $pagePath,
+            'tags' => $tags,
         ]);
     }
 
