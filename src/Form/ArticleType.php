@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleType extends AbstractType
 {
     public function __construct(
-        private string $enabledArticleTags,
+        private bool $enabledArticleTags,
     ) {
     }
 
