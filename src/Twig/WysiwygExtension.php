@@ -3,10 +3,10 @@
 namespace OHMedia\NewsBundle\Twig;
 
 use OHMedia\BootstrapBundle\Service\Paginator;
-use OHMedia\NewsBundle\Entity\Article;
-use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\FileBundle\Service\FileManager;
 use OHMedia\MetaBundle\Entity\Meta;
+use OHMedia\NewsBundle\Entity\Article;
+use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\PageBundle\Event\DynamicPageEvent;
 use OHMedia\PageBundle\Service\PageRenderer;
 use OHMedia\SettingsBundle\Service\Settings;
@@ -14,6 +14,7 @@ use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 use Twig\TwigFunction;
 
@@ -30,6 +31,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
         private Paginator $paginator,
         private Settings $settings,
         private UrlHelper $urlHelper,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -113,12 +115,21 @@ class WysiwygExtension extends AbstractWysiwygExtension
 
     private function getSchema(Article $article): string
     {
+        $pagePath = $this->pageRenderer->getCurrentPage()->getPath();
+
+        $url = $this->urlGenerator->generate(
+            'oh_media_page_frontend',
+            ['path' => $pagePath.'/'.$article->getSlug()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Article',
             'name' => $article->getTitle(),
             'description' => $article->getSnippet(),
             'datePublished' => $article->getPublishDatetime()->format('c'),
+            'url' => $url,
         ];
 
         if ($author = $article->getAuthor()) {
