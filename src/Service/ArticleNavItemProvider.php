@@ -15,17 +15,15 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
 {
     public function getNavItem(): ?NavItemInterface
     {
-        if (!$this->isGranted(ArticleVoter::INDEX, new Article())) {
-            return null;
-        }
-
-        $nav = (new NavDropdown('Articles'))
+        $nav = (new NavDropdown('Articles', 'article_index'))
             ->setIcon('newspaper');
 
-        $articles = new NavLink('Articles', 'article_index');
-        $articles->setIcon('newspaper');
+        if ($this->isGranted(ArticleVoter::INDEX, new Article())) {
+            $articles = new NavLink('Articles', 'article_index');
+            $articles->setIcon('newspaper');
 
-        $nav->addLink($articles);
+            $nav->addLink($articles);
+        }
 
         if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
             $tags = new NavLink('Tags', 'article_tag_index');
@@ -34,10 +32,12 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
             $nav->addLink($tags);
         }
 
-        $settings = new NavLink('Settings', 'article_rss_settings');
-        $settings->setIcon('gear-fill');
+        if (!$this->isGranted(ArticleVoter::SETTINGS, new Article())) {
+            $settings = new NavLink('Settings', 'article_rss_settings');
+            $settings->setIcon('gear-fill');
 
-        $nav->addLink($settings);
+            $nav->addLink($settings);
+        }
 
         return $nav;
     }
