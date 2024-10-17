@@ -22,6 +22,13 @@ class ArticleRssFrontendController extends AbstractController
         PageRawQuery $pageRawQuery,
         UrlGeneratorInterface $urlGenerator,
     ): Response {
+        $parent = $pageRawQuery->getPathWithShortcode('news()');
+
+        // News not active on the site
+        if (!$parent) {
+            throw $this->createNotFoundException();
+        }
+
         // Arbitrary limit to keep the feed manageable
         $feedLimit = 24;
         $articleEntities = $articleRepository->getPublishedArticles()
@@ -30,12 +37,6 @@ class ArticleRssFrontendController extends AbstractController
             ->getResult();
 
         $webRoot = $request->getSchemeAndHttpHost();
-        $parent = $pageRawQuery->getPathWithShortcode('news()');
-
-        // News not active on the site
-        if (!$parent) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
 
         $articles = [];
         foreach ($articleEntities as $entity) {
@@ -66,6 +67,7 @@ class ArticleRssFrontendController extends AbstractController
         );
 
         $response->headers->set('Content-Type', 'application/rss+xml');
+
         return $response;
     }
 }
