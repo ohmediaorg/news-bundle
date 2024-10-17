@@ -49,7 +49,11 @@ class WysiwygExtension extends AbstractWysiwygExtension
     {
         $pageRevision = $this->pageRenderer->getCurrentPageRevision();
 
-        if (!$pageRevision->containsShortcode('news()')) {
+        $callable = $pageRevision->getTemplate().'::getTemplate';
+        $isTemplate = is_callable($callable)
+            ? '@OHMediaNews/news.html.twig' === call_user_func($callable)
+            : false;
+        if (!$isTemplate && !$pageRevision->containsShortcode('news()')) {
             return;
         }
 
