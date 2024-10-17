@@ -10,11 +10,11 @@
         <atom:link href="{{ absolute_url(path('news_rss')) }}" rel="self" type="application/rss+xml" />
         {% for article in articles %}
         <item>
-            <title>{{ article.title }}</title>
-            <link>{{ article.link }}</link>
+            <title>{{ article }}</title>
+            <link>{{ absolute_url(page_path(parent_page ~ '/' ~ article.slug)) }}</link>
             <description>{{ article.snippet }}</description>
 
-            <pubDate>{{ article.datetime|date('r', 'America/Regina') }}</pubDate>
+            <pubDate>{{ article.publishDatetime|date('r', 'America/Regina') }}</pubDate>
 
             <guid isPermaLink="false">{{article.id}}</guid>
         </item>
