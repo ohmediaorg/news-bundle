@@ -143,7 +143,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $organizationName = $this->settings->get('schema_organization_name');
 
         if ($organizationName) {
-            $schema['organizer'] = [
+            $schema['publisher'] = [
                 '@type' => 'Organization',
                 'name' => $organizationName,
             ];
