@@ -4,11 +4,11 @@ namespace OHMedia\NewsBundle\Twig;
 
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\PageBundle\Service\PageRawQuery;
-use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
+use Twig\Extension\AbstractExtension;
 use Twig\Environment;
 use Twig\TwigFunction;
 
-class RecentArticlesExtension extends AbstractWysiwygExtension
+class RecentArticlesExtension extends AbstractExtension
 {
     public function __construct(
         private ArticleRepository $articleRepository,
