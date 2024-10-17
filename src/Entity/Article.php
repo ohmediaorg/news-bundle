@@ -198,12 +198,4 @@ class Article implements SluggableEntityInterface
     {
         return !$this->isDraft() && $this->publish_datetime > new \DateTime();
     }
-
-    public static function getRssSettings(): array
-    {
-        return [
-            self::SETTING_RSS_TITLE => 'RSS Feed title',
-            self::SETTING_RSS_DESC => 'RSS Feed Description',
-        ];
-    }
 }

@@ -20,15 +20,17 @@ class ArticleRssBackendController extends AbstractController
         Request $request,
         Settings $settings
     ): Response {
-        $rssSettings = Article::getRssSettings();
         $fb = $this->createFormBuilder();
 
-        foreach ($rssSettings as $id => $label) {
-            $fb->add($id, TextType::class, [
-                'label' => $label,
-                'data' => $settings->get($id),
-            ]);
-        }
+        $fb->add(Article::SETTING_RSS_TITLE, TextType::class, [
+            'label' => 'RSS Feed Title',
+            'data' => $settings->get(Article::SETTING_RSS_TITLE),
+        ]);
+
+        $fb->add(Article::SETTING_RSS_DESC, TextType::class, [
+            'label' => 'RSS Feed Description',
+            'data' => $settings->get(Article::SETTING_RSS_DESC),
+        ]);
 
         $fb->add('save', SubmitType::class);
 
@@ -36,16 +38,13 @@ class ArticleRssBackendController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $settings->set(Article::SETTING_RSS_TITLE, $form->get(Article::SETTING_RSS_TITLE)->getData());
+                $settings->set(Article::SETTING_RSS_DESC, $form->get(Article::SETTING_RSS_DESC)->getData());
 
-            foreach ($rssSettings as $id => $label) {
-                $entity = $formData[$id];
-
-                $settings->set($id, $entity);
+                $this->addFlash('notice', 'RSS settings updated successfully');
             }
-
-            $this->addFlash('notice', 'RSS settings updated successfully');
         }
 
         return $this->render('@OHMediaNews/backend/rss.html.twig', [
