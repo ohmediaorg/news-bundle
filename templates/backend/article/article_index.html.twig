@@ -99,6 +99,9 @@
       <small>{{ bootstrap_pagination_info(pagination) }}</small>
     {% else %}
       <p>No articles found.</p>
+      {% if can_create_article %}
+        <a href="{{ create_article_href }}">Click here to add an article.</a>
+      {% endif %}
     {% endif %}
   </div>
 </div>

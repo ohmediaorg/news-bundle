@@ -75,6 +75,9 @@
       <small>{{ bootstrap_pagination_info(pagination) }}</small>
     {% else %}
       <p>No tags found.</p>
+      {% if can_create_article_tag %}
+        <a href="{{ create_article_tag_href }}">Click here to add a tag.</a>
+      {% endif %}
     {% endif %}
   </div>
 </div>
