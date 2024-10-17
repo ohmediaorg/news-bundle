@@ -126,10 +126,11 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Article',
-            'name' => $article->getTitle(),
+            'headline' => $article->getTitle(),
             'description' => $article->getSnippet(),
             'datePublished' => $article->getPublishDatetime()->format('c'),
             'url' => $url,
+            'dateModified' => $article->getUpdatedAt()->format('c'),
         ];
 
         if ($author = $article->getAuthor()) {
