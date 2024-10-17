@@ -122,7 +122,10 @@ class WysiwygExtension extends AbstractWysiwygExtension
         ];
 
         if ($author = $article->getAuthor()) {
-            $schema['author'] = $author;
+            $schema['author'] = [
+                '@type' => 'Person',
+                'name' => $author,
+            ];
         }
 
         $organizationName = $this->settings->get('schema_organization_name');
