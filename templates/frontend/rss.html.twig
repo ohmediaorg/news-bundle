@@ -10,7 +10,7 @@
         <atom:link href="{{ feed_url }}" rel="self" type="application/rss+xml" />
         {% for article in articles %}
         <item>
-            <title>{{ article }}</title>
+            <title>{{ article.title }}</title>
             <link>{{ article.link }}</link>
             <description>{{ article.snippet }}</description>
 
