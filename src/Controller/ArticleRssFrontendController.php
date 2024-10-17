@@ -23,7 +23,7 @@ class ArticleRssFrontendController extends AbstractController
         UrlGeneratorInterface $urlGenerator,
     ): Response {
         // Arbitrary limit to keep the feed manageable
-        $feedLimit = 20;
+        $feedLimit = 24;
         $articleEntities = $articleRepository->getPublishedArticles()
             ->setMaxResults($feedLimit)
             ->getQuery()
