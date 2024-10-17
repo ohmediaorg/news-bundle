@@ -22,7 +22,7 @@ class ArticleSitemapUrlProvider extends AbstractSitemapUrlProvider
             return;
         }
 
-        $articles = $this->articleRepository->getPublishedArticles()
+        $articles = $this->articleRepository->createPublishedQueryBuilder()
             ->getQuery()
             ->getResult();
 

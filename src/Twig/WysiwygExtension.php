@@ -66,7 +66,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
 
         $dynamicPart = $this->pageRenderer->getDynamicPart();
 
-        $qb = $this->articleRepository->getPublishedArticles();
+        $qb = $this->articleRepository->createPublishedQueryBuilder();
         $qb->andWhere('a.slug = :slug');
         $qb->setParameter('slug', $dynamicPart);
         $qb->setMaxResults(1);
@@ -115,7 +115,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
             return $content;
         }
 
-        $qb = $this->articleRepository->getPublishedArticles();
+        $qb = $this->articleRepository->createPublishedQueryBuilder();
 
         $tags = null;
         if ($this->enabledArticleTags) {

@@ -32,7 +32,7 @@ class RecentArticlesExtension extends AbstractExtension
             $limit = 3;
         }
 
-        $qb = $this->articleRepository->getPublishedArticles();
+        $qb = $this->articleRepository->createPublishedQueryBuilder();
         $qb->setMaxResults($limit);
 
         $articles = $qb->getQuery()->getResult();

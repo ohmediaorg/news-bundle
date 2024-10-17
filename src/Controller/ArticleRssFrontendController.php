@@ -29,7 +29,7 @@ class ArticleRssFrontendController extends AbstractController
 
         // Arbitrary limit to keep the feed manageable
         $feedLimit = 24;
-        $articles = $articleRepository->getPublishedArticles()
+        $articles = $articleRepository->createPublishedQueryBuilder()
             ->setMaxResults($feedLimit)
             ->getQuery()
             ->getResult();
