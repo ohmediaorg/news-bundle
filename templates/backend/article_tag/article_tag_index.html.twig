@@ -41,14 +41,16 @@
           <tr>
             <th>Name</th>
             <th># of Articles</th>
+            <th>Last Updated</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {% for article_tag in pagination.results %}
           <tr>
-            <td>{{ article_tag.name }}</td>
+            <td>{{ article_tag }}</td>
             <td>{{ article_tag.getArticleCount }}</td>
+            <td>{{ article_tag.getUpdatedAt|datetime }}</td>
             <td>
               {% if is_granted(attributes.edit, article_tag) %}
               <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_tag_edit', {id: article_tag.id}) }}" title="Edit">

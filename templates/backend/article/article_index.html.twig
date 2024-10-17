@@ -48,25 +48,19 @@
         <thead>
           <tr>
             <th>Title</th>
-            <th>Tags</th>
             <th>Author</th>
-            <th>Status</th>
+            <th>Tags</th>
             <th>Publish Date</th>
-            <th>Date Created</th>
-            <th>Date Modified</th>
+            <th>Last Updated</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {% for article in pagination.results %}
           <tr>
-            <td>{{ article.title }}</td>
             <td>
-              {% for tag in article.getTags %}
-                {{ bootstrap_badge_info(tag.name) }} <br>
-              {% endfor %}
-            </td>
-            <td>{{ article.author }}</td>
-            <td>
+              {{ article }}
+              <br>
               {% if article.isPublished %}
                 {{ bootstrap_badge_success('Published') }}
               {% elseif article.isScheduled %}
@@ -75,12 +69,17 @@
                 {{ bootstrap_badge_warning('Draft')}}
               {% endif %}
             </td>
+            <td>{{ article.author }}</td>
+            <td>
+              {% for tag in article.getTags %}
+                {{ bootstrap_badge_info(tag.name) }} <br>
+              {% endfor %}
+            </td>
             <td>
               {% if not article.isDraft %}
                 {{ article.getPublishDatetime|datetime }}
               {% endif %}
             </td>
-            <td>{{ article.getCreatedAt|datetime }}</td>
             <td>{{ article.getUpdatedAt|datetime }}</td>
             <td>
               {% if is_granted(attributes.edit, article) %}
