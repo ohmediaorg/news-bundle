@@ -54,7 +54,7 @@ class ArticleRssFrontendController extends AbstractController
             ];
         }
 
-        return $this->render('@OHMediaNews/frontend/rss.html.twig', [
+        $response = $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
             'web_root' => $webRoot,
             'settings' => [
@@ -64,5 +64,8 @@ class ArticleRssFrontendController extends AbstractController
         ],
             new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );
+
+        $response->headers->set('Content-Type', 'application/rss+xml');
+        return $response;
     }
 }
