@@ -16,7 +16,7 @@
 
             <pubDate>{{ article.publishDatetime|date('r', 'America/Regina') }}</pubDate>
 
-            <guid isPermaLink="false">{{article.id}}</guid>
+            <guid isPermaLink="true">{{ absolute_url(page_path(parent_page ~ '/' ~ article.slug)) }}</guid>
         </item>
         {% endfor %}
     </channel>
