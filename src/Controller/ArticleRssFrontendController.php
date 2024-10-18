@@ -36,7 +36,6 @@ class ArticleRssFrontendController extends AbstractController
 
         $response = $this->render('@OHMediaNews/frontend/rss.html.twig', [
             'articles' => $articles,
-            'web_root' => $request->getSchemeAndHttpHost(),
             'settings' => [
                 'title' => $settings->get(Article::SETTING_RSS_TITLE),
                 'desc' => $settings->get(Article::SETTING_RSS_DESC),
