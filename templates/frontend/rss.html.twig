@@ -15,8 +15,6 @@
             <description>{{ article.snippet }}</description>
 
             <pubDate>{{ article.publishDatetime|date('r', 'America/Regina') }}</pubDate>
-
-            <guid isPermaLink="true">{{ absolute_url(page_path(parent_page ~ '/' ~ article.slug)) }}</guid>
         </item>
         {% endfor %}
     </channel>
