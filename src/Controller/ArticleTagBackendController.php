@@ -37,7 +37,15 @@ class ArticleTagBackendController extends AbstractController
             'You cannot access the list of article tags.'
         );
 
-        $qb = $articleTagRepository->createQueryBuilder('at');
+        $qb = $articleTagRepository->createQueryBuilder('at')
+            ->select('at', '(
+                SELECT COUNT(a.id)
+                FROM OHMedia\NewsBundle\Entity\Article a
+                JOIN a.tags t
+                WHERE t.id = at.id
+            ) AS article_count')
+        ;
+
         $qb->orderBy('at.id', 'desc');
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_index.html.twig', [
