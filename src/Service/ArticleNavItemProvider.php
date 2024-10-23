@@ -15,7 +15,7 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
 {
     public function getNavItem(): ?NavItemInterface
     {
-        $nav = (new NavDropdown('Articles', 'article_index'))
+        $nav = (new NavDropdown('News'))
             ->setIcon('newspaper');
 
         if ($this->isGranted(ArticleVoter::INDEX, new Article())) {
