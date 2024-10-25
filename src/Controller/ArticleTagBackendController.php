@@ -4,6 +4,7 @@ namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\BootstrapBundle\Service\Paginator;
+use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleTagType;
 use OHMedia\NewsBundle\Repository\ArticleTagRepository;
@@ -38,9 +39,10 @@ class ArticleTagBackendController extends AbstractController
         );
 
         $qb = $articleTagRepository->createQueryBuilder('at')
-            ->select('at', '(
+            ->select('at')
+            ->addselect('(
                 SELECT COUNT(a.id)
-                FROM OHMedia\NewsBundle\Entity\Article a
+                FROM '.Article::class.' a
                 JOIN a.tags t
                 WHERE t.id = at.id
             ) AS article_count')
