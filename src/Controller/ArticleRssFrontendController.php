@@ -42,7 +42,7 @@ class ArticleRssFrontendController extends AbstractController
             ],
             'parent_page' => $parent,
         ],
-            new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
+            new Response(null, Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
         );
 
         $response->headers->set('Content-Type', 'application/rss+xml');
