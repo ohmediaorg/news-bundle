@@ -54,6 +54,8 @@ class ArticleRssBackendController extends AbstractController
 
                 $this->addFlash('notice', 'RSS settings updated successfully');
             }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/rss.html.twig', [

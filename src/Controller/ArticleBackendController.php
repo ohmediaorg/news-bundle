@@ -81,6 +81,8 @@ class ArticleBackendController extends AbstractController
 
                 return $this->redirectToRoute('article_index');
             }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article/article_create.html.twig', [
@@ -119,6 +121,8 @@ class ArticleBackendController extends AbstractController
                     'id' => $article->getId(),
                 ]);
             }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article/article_edit.html.twig', [
@@ -145,12 +149,16 @@ class ArticleBackendController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $articleRepository->remove($article, true);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $articleRepository->remove($article, true);
 
-            $this->addFlash('notice', 'The article was deleted successfully.');
+                $this->addFlash('notice', 'The article was deleted successfully.');
 
-            return $this->redirectToRoute('article_index');
+                return $this->redirectToRoute('article_index');
+            }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article/article_delete.html.twig', [

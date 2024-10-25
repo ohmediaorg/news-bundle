@@ -86,6 +86,8 @@ class ArticleTagBackendController extends AbstractController
 
                 return $this->redirectToRoute('article_tag_index');
             }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_create.html.twig', [
@@ -124,6 +126,8 @@ class ArticleTagBackendController extends AbstractController
                     'id' => $articleTag->getId(),
                 ]);
             }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_edit.html.twig', [
@@ -150,12 +154,16 @@ class ArticleTagBackendController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $articleTagRepository->remove($articleTag, true);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $articleTagRepository->remove($articleTag, true);
 
-            $this->addFlash('notice', 'The article tag was deleted successfully.');
+                $this->addFlash('notice', 'The article tag was deleted successfully.');
 
-            return $this->redirectToRoute('article_tag_index');
+                return $this->redirectToRoute('article_tag_index');
+            }
+
+            $this->addFlash('error', 'There are some errors in the form below.');
         }
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_delete.html.twig', [
