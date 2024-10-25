@@ -32,7 +32,7 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
             $nav->addLink($tags);
         }
 
-        if (!$this->isGranted(ArticleVoter::SETTINGS, new Article())) {
+        if ($this->isGranted(ArticleVoter::SETTINGS, new Article())) {
             $settings = new NavLink('Settings', 'article_rss_settings');
             $settings->setIcon('gear-fill');
 
