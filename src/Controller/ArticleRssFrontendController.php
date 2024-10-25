@@ -41,8 +41,7 @@ class ArticleRssFrontendController extends AbstractController
                 'desc' => $settings->get(Article::SETTING_RSS_DESC),
             ],
             'parent_page' => $parent,
-        ],
-            new Response(null, Response::HTTP_OK, ['Content-Type' => 'application/rss+xml'])
+        ]
         );
 
         $response->headers->set('Content-Type', 'application/rss+xml');
