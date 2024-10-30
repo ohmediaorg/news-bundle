@@ -41,7 +41,6 @@ class WysiwygExtension extends AbstractWysiwygExtension
         private bool $enabledArticleTags,
         RequestStack $requestStack,
     ) {
-        // Cannot autowire service "OHMedia\NewsBundle\Twig\WysiwygExtension": argument "$request" of method "__construct()" needs an instance of "Symfony\Component\HttpFoundation\Request" but this type has been excluded from autowiring.
         $this->request = $requestStack->getCurrentRequest();
     }
 
