@@ -133,8 +133,9 @@ class WysiwygExtension extends AbstractWysiwygExtension
                 ->getResult();
 
             // accommodates multiple tags (ie. `tags[]=abc&tags[]=123`)
-            // TODO confirm array? Validate?
-            $activeTags = $query['tags'] ?? [];
+            $activeTags = isset($query['tags']) && is_array($query['tags']) ?
+                $query['tags'] :
+                [];
 
             $tagsArray = [];
 
