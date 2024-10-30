@@ -40,7 +40,7 @@ class ArticleTagBackendController extends AbstractController
 
         $qb = $articleTagRepository->createQueryBuilder('at')
             ->select('at')
-            ->addselect('(
+            ->addSelect('(
                 SELECT COUNT(a.id)
                 FROM '.Article::class.' a
                 JOIN a.tags t
