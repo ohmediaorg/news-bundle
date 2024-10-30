@@ -10,6 +10,7 @@ use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
 use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
 use OHMedia\UtilityBundle\Entity\SluggableEntityTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleTagRepository::class)]
 #[UniqueEntity('slug')]
@@ -70,8 +71,8 @@ class ArticleTag implements SluggableEntityInterface
 
     public function addArticle(Article $article): static
     {
-        if (!$this->article->contains($article)) {
-            $this->article->add($article);
+        if (!$this->articles->contains($article)) {
+            $this->articles->add($article);
         }
 
         return $this;
@@ -79,7 +80,7 @@ class ArticleTag implements SluggableEntityInterface
 
     public function removeArticle(Article $article): static
     {
-        $this->article->removeElement($article);
+        $this->articles->removeElement($article);
 
         return $this;
     }

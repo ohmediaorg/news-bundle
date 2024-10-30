@@ -7,7 +7,6 @@ use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\PageBundle\Service\PageRawQuery;
 use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,7 +14,6 @@ class ArticleRssFrontendController extends AbstractController
 {
     #[Route('/news/rss', name: 'news_rss')]
     public function rssFeed(
-        Request $request,
         ArticleRepository $articleRepository,
         Settings $settings,
         PageRawQuery $pageRawQuery,

@@ -13,6 +13,7 @@ use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
 use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
 use OHMedia\UtilityBundle\Entity\SluggableEntityTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[UniqueEntity('slug')]
