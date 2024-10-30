@@ -11,6 +11,7 @@ use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\PageBundle\Event\DynamicPageEvent;
 use OHMedia\PageBundle\Service\PageRenderer;
 use OHMedia\SettingsBundle\Service\Settings;
+use OHMedia\TimezoneBundle\Service\Timezone;
 use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -27,6 +28,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
     private $request;
     private bool $rendered = false;
     private ?Article $articleEntity = null;
+    private $timezone;
 
     public function __construct(
         private ArticleRepository $articleRepository,
@@ -40,8 +42,10 @@ class WysiwygExtension extends AbstractWysiwygExtension
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags,
         RequestStack $requestStack,
+        Timezone $timezoneService,
     ) {
         $this->request = $requestStack->getCurrentRequest();
+        $this->timezone = new \DateTimeZone($timezoneService->get());
     }
 
     public function getFunctions(): array
@@ -187,8 +191,15 @@ class WysiwygExtension extends AbstractWysiwygExtension
             }
         }
 
+        $pagination = $this->paginator->paginate($qb, 12);
+        $articles = $pagination->getResults();
+
+        foreach($articles as $article) {
+            $article->setTimezone($this->timezone);
+        }
+
         return $twig->render('@OHMediaNews/news_listing.html.twig', [
-            'pagination' => $this->paginator->paginate($qb, 12),
+            'pagination' => $pagination,
             'news_page_path' => $pagePath,
             'tags' => $tagsArray,
         ]);

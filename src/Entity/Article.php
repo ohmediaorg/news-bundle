@@ -62,6 +62,8 @@ class Article implements SluggableEntityInterface
     #[ORM\ManyToMany(targetEntity: ArticleTag::class, inversedBy: 'articles')]
     private Collection $tags;
 
+    private ?\DateTimeZone $timezone = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -149,6 +151,18 @@ class Article implements SluggableEntityInterface
         return $this;
     }
 
+    public function getLocalPublishDatetime(): ?\DateTimeInterface
+    {
+        if ($this->publish_datetime && $this->timezone) {
+            $publish_datetime = clone $this->publish_datetime;
+            $publish_datetime->setTimezone($this->timezone);
+
+            return $publish_datetime;
+        }
+
+        return $this->publish_datetime;
+    }
+
     public function getPublishDatetime(): ?\DateTimeInterface
     {
         return $this->publish_datetime;
@@ -198,5 +212,17 @@ class Article implements SluggableEntityInterface
     public function isScheduled(): bool
     {
         return !$this->isDraft() && $this->publish_datetime > new \DateTime();
+    }
+
+    public function getTimezone(): ?\DateTimeZone
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?\DateTimeZone $timezone): static
+    {
+        $this->timezone = $timezone;
+
+        return $this;
     }
 }

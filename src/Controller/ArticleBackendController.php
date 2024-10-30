@@ -14,6 +14,7 @@ use OHMedia\UtilityBundle\Form\DeleteType;
 use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,6 +53,14 @@ class ArticleBackendController extends AbstractController
         ]);
     }
 
+    private function setPublishDatetime(Article $article, FormInterface $form)
+    {
+        $datetime = $form->get('publish_datetime')->getData();
+        $datetime->setTimezone(new \DateTimeZone('UTC'));
+
+        $article->setPublishDatetime($datetime);
+    }
+
     #[Route('/article/create', name: 'article_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
@@ -75,6 +84,7 @@ class ArticleBackendController extends AbstractController
             $this->setSlug($article);
 
             if ($form->isValid()) {
+                $this->setPublishDatetime($article, $form);
                 $articleRepository->save($article, true);
 
                 $this->addFlash('notice', 'The article was created successfully.');
@@ -110,6 +120,7 @@ class ArticleBackendController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+            $this->setPublishDatetime($article, $form);
             $this->setSlug($article);
 
             if ($form->isValid()) {
