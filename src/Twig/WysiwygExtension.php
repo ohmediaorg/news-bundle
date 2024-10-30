@@ -167,10 +167,15 @@ class WysiwygExtension extends AbstractWysiwygExtension
                     unset($thisQuery['tags']);
                 }
 
+                $href = $pagePath;
+
+                if($thisQuery) {
+                    $href .= '?'.http_build_query($thisQuery);
+                    $href = str_replace(['%5B', '%5D'], ['[', ']'], $href);
+                }
+
                 $tagsArray[] = [
-                    'href' => !empty($thisQuery) ?
-                        $pagePath.'?'.http_build_query($thisQuery) :
-                        $pagePath,
+                    'href' => $href,
                     'name' => $tag->getName(),
                     'active' => $isActive,
                 ];
