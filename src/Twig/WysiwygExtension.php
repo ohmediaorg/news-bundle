@@ -123,7 +123,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $qb = $this->articleRepository->createPublishedQueryBuilder();
 
         $tags = null;
-        $query = $this->request->query->all(); // basically $_GET
+        $query = $this->request->query->all();
 
         if ($this->enabledArticleTags) {
             $tags = $this->articleTagRepository->createQueryBuilder('at')
@@ -173,6 +173,12 @@ class WysiwygExtension extends AbstractWysiwygExtension
                     'name' => $tag->getName(),
                     'active' => $isActive,
                 ];
+            }
+
+            if ($activeTags) {
+                $qb->innerJoin('a.tags', 't');
+                $qb->andWhere('t.slug IN (:tags)');
+                $qb->setParameter('tags', $activeTags);
             }
         }
 
