@@ -14,6 +14,7 @@ use OHMedia\SettingsBundle\Service\Settings;
 use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,6 +24,7 @@ use Twig\TwigFunction;
 #[AsEventListener(event: DynamicPageEvent::class, method: 'onDynamicPageEvent')]
 class WysiwygExtension extends AbstractWysiwygExtension
 {
+    private $request;
     private bool $rendered = false;
     private ?Article $articleEntity = null;
 
@@ -37,7 +39,10 @@ class WysiwygExtension extends AbstractWysiwygExtension
         private ArticleTagRepository $articleTagRepository,
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags,
+        RequestStack $requestStack,
     ) {
+        // Cannot autowire service "OHMedia\NewsBundle\Twig\WysiwygExtension": argument "$request" of method "__construct()" needs an instance of "Symfony\Component\HttpFoundation\Request" but this type has been excluded from autowiring.
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getFunctions(): array
@@ -118,18 +123,63 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $qb = $this->articleRepository->createPublishedQueryBuilder();
 
         $tags = null;
+        $query = $this->request->query->all(); // basically $_GET
+
         if ($this->enabledArticleTags) {
             $tags = $this->articleTagRepository->createQueryBuilder('at')
                 ->select('at')
                 ->innerJoin('at.articles', 'a')
                 ->getQuery()
                 ->getResult();
+
+            // accommodates multiple tags (ie. `tags[]=abc&tags[]=123`)
+            // TODO confirm array? Validate?
+            $activeTags = $query['tags'] ?? [];
+
+            $tagsArray = [];
+
+            foreach ($tags as $tag) {
+                $slug = $tag->getSlug();
+
+                $isActive = in_array($slug, $activeTags);
+
+                // making copies for modification
+                $thisQuery = $query;
+                $thisQueryTags = $activeTags;
+
+                // building the href for the tag link such that:
+                // a) clicking a non-active tag will make it active on next page load
+                // b) clicking an active tag will make it not active on next page load
+
+                if ($isActive) {
+                    $key = array_search($slug, $thisQueryTags);
+                    if (false !== $key) {
+                        array_splice($thisQueryTags, $key, 1);
+                    }
+                } else {
+                    $thisQueryTags[] = $slug;
+                }
+
+                if ($thisQueryTags) {
+                    $thisQuery['tags'] = $thisQueryTags;
+                } else {
+                    unset($thisQuery['tags']);
+                }
+
+                $tagsArray[] = [
+                    'href' => !empty($thisQuery) ?
+                        $pagePath.'?'.http_build_query($thisQuery) :
+                        $pagePath,
+                    'name' => $tag->getName(),
+                    'active' => $isActive,
+                ];
+            }
         }
 
         return $twig->render('@OHMediaNews/news_listing.html.twig', [
             'pagination' => $this->paginator->paginate($qb, 12),
             'news_page_path' => $pagePath,
-            'tags' => $tags,
+            'tags' => $tagsArray,
         ]);
     }
 
