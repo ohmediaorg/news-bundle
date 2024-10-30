@@ -4,7 +4,8 @@
 
 {% block breadcrumbs %}
 {{ bootstrap_breadcrumbs(
-  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' Articles', 'article_index'),
+  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
+  bootstrap_breadcrumb('Articles', 'article_index'),
   bootstrap_breadcrumb('Tags', 'article_tag_index'),
   bootstrap_breadcrumb('Delete'),
 ) }}
