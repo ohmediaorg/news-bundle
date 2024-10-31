@@ -25,7 +25,6 @@ use Twig\TwigFunction;
 #[AsEventListener(event: DynamicPageEvent::class, method: 'onDynamicPageEvent')]
 class WysiwygExtension extends AbstractWysiwygExtension
 {
-    private $request;
     private bool $rendered = false;
     private ?Article $articleEntity = null;
     private $timezone;
@@ -41,10 +40,9 @@ class WysiwygExtension extends AbstractWysiwygExtension
         private ArticleTagRepository $articleTagRepository,
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags,
-        RequestStack $requestStack,
+        private RequestStack $requestStack,
         Timezone $timezoneService,
     ) {
-        $this->request = $requestStack->getCurrentRequest();
         $this->timezone = new \DateTimeZone($timezoneService->get());
     }
 
@@ -126,7 +124,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $qb = $this->articleRepository->createPublishedQueryBuilder();
 
         $tags = null;
-        $query = $this->request->query->all();
+        $request = $this->requestStack->getCurrentRequest();
+        $query = $request->query->all();
 
         if ($this->enabledArticleTags) {
             $tags = $this->articleTagRepository->createQueryBuilder('at')
@@ -172,7 +171,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
 
                 $href = $pagePath;
 
-                if($thisQuery) {
+                if ($thisQuery) {
                     $href .= '?'.http_build_query($thisQuery);
                     $href = str_replace(['%5B', '%5D'], ['[', ']'], $href);
                 }
@@ -194,7 +193,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $pagination = $this->paginator->paginate($qb, 12);
         $articles = $pagination->getResults();
 
-        foreach($articles as $article) {
+        foreach ($articles as $article) {
             $article->setTimezone($this->timezone);
         }
 
