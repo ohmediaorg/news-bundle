@@ -144,21 +144,19 @@ class WysiwygExtension extends AbstractWysiwygExtension
             foreach ($tags as $tag) {
                 $slug = $tag->getSlug();
 
-                $isActive = in_array($slug, $activeTags);
-
                 // making copies for modification
                 $thisQuery = $query;
                 $thisQueryTags = $activeTags;
 
+                $key = array_search($slug, $thisQueryTags);
+                $isActive = false !== $key;
+
                 // building the href for the tag link such that:
-                // a) clicking a non-active tag will make it active on next page load
-                // b) clicking an active tag will make it not active on next page load
+                // a) clicking an active tag will make it not active on next page load
+                // b) clicking a non-active tag will make it active on next page load
 
                 if ($isActive) {
-                    $key = array_search($slug, $thisQueryTags);
-                    if (false !== $key) {
-                        array_splice($thisQueryTags, $key, 1);
-                    }
+                    array_splice($thisQueryTags, $key, 1);
                 } else {
                     $thisQueryTags[] = $slug;
                 }
