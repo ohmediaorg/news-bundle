@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleTagRepository::class)]
 #[UniqueEntity('slug')]
+#[UniqueEntity('name')]
 class ArticleTag implements SluggableEntityInterface
 {
     use BlameableEntityTrait;
@@ -24,7 +25,7 @@ class ArticleTag implements SluggableEntityInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
     private ?string $name = null;
 
