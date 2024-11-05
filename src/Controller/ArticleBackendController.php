@@ -42,8 +42,8 @@ class ArticleBackendController extends AbstractController
         );
 
         $qb = $articleRepository->createQueryBuilder('a');
-        $qb->orderBy('CASE WHEN a.publish_datetime IS NULL THEN 0 ELSE 1 END', 'ASC')
-            ->addOrderBy('a.publish_datetime', 'DESC');
+        $qb->orderBy('CASE WHEN a.publish_at IS NULL THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('a.publish_at', 'DESC');
 
         return $this->render('@OHMediaNews/backend/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
@@ -53,12 +53,15 @@ class ArticleBackendController extends AbstractController
         ]);
     }
 
-    private function setPublishDatetime(Article $article, FormInterface $form)
+    private function setPublishAt(Article $article, FormInterface $form)
     {
-        $datetime = $form->get('publish_datetime')->getData();
-        $datetime->setTimezone(new \DateTimeZone('UTC'));
+        $datetime = $form->get('publish_at')->getData();
 
-        $article->setPublishDatetime($datetime);
+        if ($datetime) {
+            $datetime->setTimezone(new \DateTimeZone('UTC'));
+
+            $article->setPublishAt($datetime);
+        }
     }
 
     #[Route('/article/create', name: 'article_create', methods: ['GET', 'POST'])]
@@ -84,7 +87,7 @@ class ArticleBackendController extends AbstractController
             $this->setSlug($article);
 
             if ($form->isValid()) {
-                $this->setPublishDatetime($article, $form);
+                $this->setPublishAt($article, $form);
                 $articleRepository->save($article, true);
 
                 $this->addFlash('notice', 'The article was created successfully.');
@@ -120,7 +123,7 @@ class ArticleBackendController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $this->setPublishDatetime($article, $form);
+            $this->setPublishAt($article, $form);
             $this->setSlug($article);
 
             if ($form->isValid()) {

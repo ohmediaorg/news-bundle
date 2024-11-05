@@ -3,12 +3,12 @@
 namespace OHMedia\NewsBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\TimezoneBundle\Util\DateTimeUtil;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\Parameter;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -44,8 +44,8 @@ class ArticleRepository extends ServiceEntityRepository
     public function createPublishedQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.publish_datetime IS NOT NULL')
-            ->andWhere('a.publish_datetime <= :now')
+            ->andWhere('a.publish_at IS NOT NULL')
+            ->andWhere('a.publish_at <= :now')
             ->setParameter('now', DateTimeUtil::getDateTimeUtc());
     }
 

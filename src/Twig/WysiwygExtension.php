@@ -217,7 +217,7 @@ class WysiwygExtension extends AbstractWysiwygExtension
             '@type' => 'Article',
             'headline' => $article->getTitle(),
             'description' => $article->getSnippet(),
-            'datePublished' => $article->getPublishDatetime()->format('c'),
+            'datePublished' => $article->getPublishAt()->format('c'),
             'url' => $url,
             'dateModified' => $article->getUpdatedAt()->format('c'),
         ];
