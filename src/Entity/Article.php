@@ -16,7 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[UniqueEntity('slug')]
-#[UniqueEntity('title')]
 class Article implements SluggableEntityInterface
 {
     use BlameableEntityTrait;
