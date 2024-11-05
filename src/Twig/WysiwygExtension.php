@@ -12,6 +12,7 @@ use OHMedia\PageBundle\Event\DynamicPageEvent;
 use OHMedia\PageBundle\Service\PageRenderer;
 use OHMedia\SettingsBundle\Service\Settings;
 use OHMedia\TimezoneBundle\Service\Timezone;
+use OHMedia\TimezoneBundle\Util\DateTimeUtil;
 use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -131,6 +132,9 @@ class WysiwygExtension extends AbstractWysiwygExtension
             $tags = $this->articleTagRepository->createQueryBuilder('at')
                 ->select('at')
                 ->innerJoin('at.articles', 'a')
+                ->where('a.published_at IS NOT NULL')
+                ->andWhere('a.published_at <= :now')
+                ->setParameter('now', DateTimeUtil::getDateTimeUtc())
                 ->getQuery()
                 ->getResult();
 
@@ -161,17 +165,26 @@ class WysiwygExtension extends AbstractWysiwygExtension
                     $thisQueryTags[] = $slug;
                 }
 
-                if ($thisQueryTags) {
-                    $thisQuery['tags'] = $thisQueryTags;
+                unset($thisQuery['tags']);
+                $queryString = http_build_query($thisQuery);
+                $tagQueryString = [];
+
+                foreach ($thisQueryTags as $slug) {
+                    $tagQueryString[] = 'tags[]='.urlencode($slug);
+                }
+
+                $tagQueryString = implode('&', $tagQueryString);
+
+                if ($queryString) {
+                    $queryString = $queryString.'&'.$tagQueryString;
                 } else {
-                    unset($thisQuery['tags']);
+                    $queryString = $tagQueryString;
                 }
 
                 $href = $pagePath;
 
-                if ($thisQuery) {
-                    $href .= '?'.http_build_query($thisQuery);
-                    $href = str_replace(['%5B', '%5D'], ['[', ']'], $href);
+                if ($queryString) {
+                    $href .= '?'.$queryString;
                 }
 
                 $tagsArray[] = [
@@ -191,8 +204,10 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $pagination = $this->paginator->paginate($qb, 12);
         $articles = $pagination->getResults();
 
-        foreach ($articles as $article) {
-            $article->setTimezone($this->timezone);
+        if ($articles->count()) {
+            foreach ($articles as $article) {
+                $article->setTimezone($this->timezone);
+            }
         }
 
         return $twig->render('@OHMediaNews/news_listing.html.twig', [
