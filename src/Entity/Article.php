@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use OHMedia\FileBundle\Entity\File;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
+use OHMedia\TimezoneBundle\Util\DateTimeUtil;
 use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
 use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
 use OHMedia\UtilityBundle\Entity\SluggableEntityTrait;
@@ -189,12 +190,12 @@ class Article implements SluggableEntityInterface
 
     public function isPublished(): bool
     {
-        return !$this->isDraft() && $this->published_at <= new \DateTime();
+        return !$this->isDraft() && DateTimeUtil::isPast($this->published_at);
     }
 
     public function isScheduled(): bool
     {
-        return !$this->isDraft() && $this->published_at > new \DateTime();
+        return !$this->isDraft() && DateTimeUtil::isFuture($this->published_at);
     }
 
     public function getTimezone(): ?\DateTimeZone
