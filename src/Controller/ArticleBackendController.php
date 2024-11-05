@@ -53,17 +53,6 @@ class ArticleBackendController extends AbstractController
         ]);
     }
 
-    private function setPublishedAt(Article $article, FormInterface $form)
-    {
-        $datetime = $form->get('published_at')->getData();
-
-        if ($datetime) {
-            $datetime->setTimezone(new \DateTimeZone('UTC'));
-
-            $article->setPublishedAt($datetime);
-        }
-    }
-
     #[Route('/article/create', name: 'article_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
@@ -87,7 +76,6 @@ class ArticleBackendController extends AbstractController
             $this->setSlug($article);
 
             if ($form->isValid()) {
-                $this->setPublishedAt($article, $form);
                 $articleRepository->save($article, true);
 
                 $this->addFlash('notice', 'The article was created successfully.');
@@ -123,7 +111,6 @@ class ArticleBackendController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $this->setPublishedAt($article, $form);
             $this->setSlug($article);
 
             if ($form->isValid()) {
