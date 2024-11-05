@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use OHMedia\FileBundle\Entity\File;
-use OHMedia\MetaBundle\Entity\Meta;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\UtilityBundle\Entity\BlameableEntityTrait;
 use OHMedia\UtilityBundle\Entity\SluggableEntityInterface;
@@ -49,10 +48,6 @@ class Article implements SluggableEntityInterface
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?File $image = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Meta $meta = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $publish_datetime = null;
@@ -136,18 +131,6 @@ class Article implements SluggableEntityInterface
     public function setImage(File $image): static
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getMeta(): ?Meta
-    {
-        return $this->meta;
-    }
-
-    public function setMeta(Meta $meta): static
-    {
-        $this->meta = $meta;
 
         return $this;
     }

@@ -3,7 +3,6 @@
 namespace OHMedia\NewsBundle\Form;
 
 use OHMedia\FileBundle\Form\Type\FileEntityType;
-use OHMedia\MetaBundle\Form\Type\MetaEntityType;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\TimezoneBundle\Form\Type\DateTimeType;
@@ -55,14 +54,10 @@ class ArticleType extends AbstractType
             ]);
         }
 
-        $builder->add('meta', MetaEntityType::class, [
-            'data' => $article->getMeta(),
-        ]);
-
         $builder->add('publish_datetime', DateTimeType::class, [
             'required' => false,
             'widget' => 'single_text',
-            'help' => 'If empty or in the future, this project will not be visible on the frontend.',
+            'help' => 'If empty or in the future, this article will not be visible on the frontend.',
         ]);
     }
 
