@@ -49,7 +49,7 @@ class Article implements SluggableEntityInterface
     private ?File $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $publish_at = null;
+    private ?\DateTimeInterface $published_at = null;
 
     /**
      * @var Collection<int, ArticleTag>
@@ -136,24 +136,24 @@ class Article implements SluggableEntityInterface
 
     public function getLocalPublishDatetime(): ?\DateTimeInterface
     {
-        if ($this->publish_at && $this->timezone) {
-            $publish_at = clone $this->publish_at;
-            $publish_at->setTimezone($this->timezone);
+        if ($this->published_at && $this->timezone) {
+            $published_at = clone $this->published_at;
+            $published_at->setTimezone($this->timezone);
 
-            return $publish_at;
+            return $published_at;
         }
 
-        return $this->publish_at;
+        return $this->published_at;
     }
 
-    public function getPublishAt(): ?\DateTimeInterface
+    public function getPublishedAt(): ?\DateTimeInterface
     {
-        return $this->publish_at;
+        return $this->published_at;
     }
 
-    public function setPublishAt(?\DateTimeInterface $publish_at): static
+    public function setPublishedAt(?\DateTimeInterface $published_at): static
     {
-        $this->publish_at = $publish_at;
+        $this->published_at = $published_at;
 
         return $this;
     }
@@ -184,17 +184,17 @@ class Article implements SluggableEntityInterface
 
     public function isDraft(): bool
     {
-        return is_null($this->publish_at);
+        return is_null($this->published_at);
     }
 
     public function isPublished(): bool
     {
-        return !$this->isDraft() && $this->publish_at <= new \DateTime();
+        return !$this->isDraft() && $this->published_at <= new \DateTime();
     }
 
     public function isScheduled(): bool
     {
-        return !$this->isDraft() && $this->publish_at > new \DateTime();
+        return !$this->isDraft() && $this->published_at > new \DateTime();
     }
 
     public function getTimezone(): ?\DateTimeZone

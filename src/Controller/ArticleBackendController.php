@@ -42,8 +42,8 @@ class ArticleBackendController extends AbstractController
         );
 
         $qb = $articleRepository->createQueryBuilder('a');
-        $qb->orderBy('CASE WHEN a.publish_at IS NULL THEN 0 ELSE 1 END', 'ASC')
-            ->addOrderBy('a.publish_at', 'DESC');
+        $qb->orderBy('CASE WHEN a.published_at IS NULL THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('a.published_at', 'DESC');
 
         return $this->render('@OHMediaNews/backend/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
@@ -53,14 +53,14 @@ class ArticleBackendController extends AbstractController
         ]);
     }
 
-    private function setPublishAt(Article $article, FormInterface $form)
+    private function setPublishedAt(Article $article, FormInterface $form)
     {
-        $datetime = $form->get('publish_at')->getData();
+        $datetime = $form->get('published_at')->getData();
 
         if ($datetime) {
             $datetime->setTimezone(new \DateTimeZone('UTC'));
 
-            $article->setPublishAt($datetime);
+            $article->setPublishedAt($datetime);
         }
     }
 
@@ -87,7 +87,7 @@ class ArticleBackendController extends AbstractController
             $this->setSlug($article);
 
             if ($form->isValid()) {
-                $this->setPublishAt($article, $form);
+                $this->setPublishedAt($article, $form);
                 $articleRepository->save($article, true);
 
                 $this->addFlash('notice', 'The article was created successfully.');
@@ -123,7 +123,7 @@ class ArticleBackendController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $this->setPublishAt($article, $form);
+            $this->setPublishedAt($article, $form);
             $this->setSlug($article);
 
             if ($form->isValid()) {
