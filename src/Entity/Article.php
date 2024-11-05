@@ -135,18 +135,6 @@ class Article implements SluggableEntityInterface
         return $this;
     }
 
-    public function getLocalPublishDatetime(): ?\DateTimeInterface
-    {
-        if ($this->published_at && $this->timezone) {
-            $published_at = clone $this->published_at;
-            $published_at->setTimezone($this->timezone);
-
-            return $published_at;
-        }
-
-        return $this->published_at;
-    }
-
     public function getPublishedAt(): ?\DateTimeInterface
     {
         return $this->published_at;
