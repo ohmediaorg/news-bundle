@@ -1,0 +1,87 @@
+{% extends '@OHMediaBackend/base.html.twig' %}
+
+{% block meta_title %}Tags{% endblock %}
+
+{% block breadcrumbs %}
+{{ bootstrap_breadcrumbs(
+  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
+  bootstrap_breadcrumb('Articles', 'article_index'),
+  bootstrap_breadcrumb('Tags', 'article_tag_index'),
+) }}
+{% endblock %}
+
+{% set can_create_article_tag = is_granted(attributes.create, new_article_tag) %}
+
+{% set create_article_tag_href = path('article_tag_create') %}
+
+{% block actions %}
+<div class="btn-group btn-group-sm">
+  {% if can_create_article_tag %}
+    <a href="{{ create_article_tag_href }}" class="btn btn-primary">
+      {{ bootstrap_icon('plus') }} Add Tag
+    </a>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block main %}
+{% set article_tag_count = pagination.count %}
+
+<div class="card">
+  <div class="card-body">
+    <div class="card-title card-title-with-count">
+      <h1 class="card-title-heading">Tags</h1>
+      <div class="card-title-count">
+        {{ bootstrap_badge_primary(article_tag_count) }}
+      </div>
+    </div>
+
+    {% if article_tag_count %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th># of Articles</th>
+            <th>Last Updated</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in pagination.results %}
+            {% set article_tag = result.0 %}
+
+          <tr>
+            <td>{{ article_tag }}</td>
+            <td>{{ result.article_count }}</td>
+            <td>{{ article_tag.getUpdatedAt|datetime }}</td>
+            <td>
+              {% if is_granted(attributes.edit, article_tag) %}
+              <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_tag_edit', {id: article_tag.id}) }}" title="Edit">
+                {{ bootstrap_icon('pen-fill') }}
+                <span class="visually-hidden">Edit</span>
+              </a>
+              {% endif %}
+              {% if is_granted(attributes.delete, article_tag) %}
+              <a class="btn btn-sm btn-danger btn-action" href="{{ path('article_tag_delete', {id: article_tag.id}) }}" title="Delete" data-confirm="Are you sure you want to delete this tag? Clicking OK will take you to a verification step to delete this entry.">
+                {{ bootstrap_icon('trash-fill') }}
+                <span class="visually-hidden">Delete</span>
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {{ bootstrap_pagination(pagination) }}
+
+      <small>{{ bootstrap_pagination_info(pagination) }}</small>
+    {% else %}
+      <p>No tags found.</p>
+      {% if can_create_article_tag %}
+        <a href="{{ create_article_tag_href }}">Click here to add a tag.</a>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

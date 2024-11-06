@@ -1,0 +1,11 @@
+{% extends '@OHMediaBackend/form.html.twig' %}
+
+{% set form_title = 'Edit Article' %}
+
+{% block breadcrumbs %}
+{{ bootstrap_breadcrumbs(
+  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
+  bootstrap_breadcrumb('Articles', 'article_index'),
+  bootstrap_breadcrumb('Edit'),
+) }}
+{% endblock %}

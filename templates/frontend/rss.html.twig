@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+
+        <title>{{ settings.title }}</title>
+        <link>{{ absolute_url(page_path('')) }}</link>
+
+        <description>{{ settings.desc }}</description>
+        <language>en-us</language>
+        <atom:link href="{{ absolute_url(path('news_rss')) }}" rel="self" type="application/rss+xml" />
+        {% for article in articles %}
+        <item>
+            <title>{{ article }}</title>
+            <link>{{ absolute_url(page_path(parent_page ~ '/' ~ article.slug)) }}</link>
+            <description>{{ article.snippet }}</description>
+
+            <pubDate>{{ article.publishDatetime|date('r', 'UTC') }}</pubDate>
+        </item>
+        {% endfor %}
+    </channel>
+</rss>
