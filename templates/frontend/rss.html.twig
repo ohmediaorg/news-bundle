@@ -14,7 +14,7 @@
             <link>{{ absolute_url(page_path(parent_page ~ '/' ~ article.slug)) }}</link>
             <description>{{ article.snippet }}</description>
 
-            <pubDate>{{ article.publishDatetime|date('r', 'UTC') }}</pubDate>
+            <pubDate>{{ article.publishedAt|date('r', 'UTC') }}</pubDate>
         </item>
         {% endfor %}
     </channel>
