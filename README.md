@@ -71,7 +71,7 @@ two variables: `article` and `news_page_path`. Here is a basic implementation:
 ```twig
 {{ dump(article) }}
 
-<a href="page_path(news_page_path)">View All</a>
+<a href="{{ page_path(news_page_path) }}">View All</a>
 ```
 ## Recent News   
    
@@ -83,5 +83,5 @@ two variables: `articles` and `news_page_path`. Here is a basic implementation:
   {% for article in articles %}
     {{ dump(article) }}
   {% endfor %}
-  <a href="page_path(news_page_path)">View All</a>
+  <a href="{{ page_path(news_page_path) }}">View All</a>
 ```
