@@ -124,6 +124,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
         $request = $this->requestStack->getCurrentRequest();
         $query = $request->query->all();
 
+        $tagsArray = [];
+
         if ($this->enabledArticleTags) {
             $tags = $this->articleTagRepository->createQueryBuilder('at')
                 ->select('at')
@@ -138,8 +140,6 @@ class WysiwygExtension extends AbstractWysiwygExtension
             $activeTags = isset($query['tags']) && is_array($query['tags']) ?
                 $query['tags'] :
                 [];
-
-            $tagsArray = [];
 
             foreach ($tags as $tag) {
                 $slug = $tag->getSlug();
