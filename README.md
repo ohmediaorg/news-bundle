@@ -39,15 +39,15 @@ three variables: `pagination`, `news_page_path` and `tags`. Here is a basic impl
 
 ```twig
 {% if tags %}
-<div id="tags">
-  {% for tag in tags %}
-    <a href="{{ tag.href }}" {%if tag.active %}class='active'{% endif %}>{{ tag.name }}</a>
-  {% endfor %}
+  <div id="tags">
+    {% for tag in tags %}
+      <a href="{{ tag.href }}" {%if tag.active %}class='active'{% endif %}>{{ tag.name }}</a>
+    {% endfor %}
 
-</section>
+  </div>
 {% endif %}
 
-<section id="news">
+<div id="news">
   {% if pagination.results|length > 0 %}
     {% for article in pagination.results %}
       {{ dump(article) }}
@@ -55,7 +55,7 @@ three variables: `pagination`, `news_page_path` and `tags`. Here is a basic impl
   {% else %}
     <p>No articles</p>
   {% endif %}
-</section>
+</div>
 
 {{ bootstrap_pagination(pagination) }}
 {{ bootstrap_pagination_info(pagination) }}
