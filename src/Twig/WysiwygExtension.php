@@ -103,7 +103,6 @@ class WysiwygExtension extends AbstractWysiwygExtension
             return '';
         }
 
-        $tagsArray = [];
         $this->rendered = true;
 
         $pagePath = $this->pageRenderer->getCurrentPage()->getPath();
@@ -139,6 +138,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
             $activeTags = isset($query['tags']) && is_array($query['tags']) ?
                 $query['tags'] :
                 [];
+
+            $tagsArray = [];
 
             foreach ($tags as $tag) {
                 $slug = $tag->getSlug();
