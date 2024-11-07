@@ -11,6 +11,7 @@ use OHMedia\NewsBundle\Repository\ArticleTagRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use OHMedia\UtilityBundle\Form\DeleteType;
 use OHMedia\UtilityBundle\Service\EntitySlugger;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,7 +100,7 @@ class ArticleTagBackendController extends AbstractController
     #[Route('/articles/tag/{id}/edit', name: 'article_tag_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
-        ArticleTag $articleTag,
+        #[MapEntity(id: 'id')] ArticleTag $articleTag,
         ArticleTagRepository $articleTagRepository
     ): Response {
         $this->denyAccessUnlessGranted(
@@ -139,7 +140,7 @@ class ArticleTagBackendController extends AbstractController
     #[Route('/articles/tag/{id}/delete', name: 'article_tag_delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
-        ArticleTag $articleTag,
+        #[MapEntity(id: 'id')] ArticleTag $articleTag,
         ArticleTagRepository $articleTagRepository
     ): Response {
         $this->denyAccessUnlessGranted(

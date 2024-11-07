@@ -53,6 +53,8 @@ class ArticleRssBackendController extends AbstractController
                 $settings->set(Article::SETTING_RSS_DESC, $form->get(Article::SETTING_RSS_DESC)->getData());
 
                 $this->addFlash('notice', 'RSS settings updated successfully');
+
+                return $this->redirectToRoute('article_rss_settings');
             }
 
             $this->addFlash('error', 'There are some errors in the form below.');
