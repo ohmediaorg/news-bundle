@@ -46,7 +46,8 @@ class ArticleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.published_at IS NOT NULL')
             ->andWhere('a.published_at <= :now')
-            ->setParameter('now', DateTimeUtil::getDateTimeUtc());
+            ->setParameter('now', DateTimeUtil::getDateTimeUtc())
+            ->orderBy('a.published_at', 'DESC');
     }
 
     public function containsWysiwygShortcodes(string ...$shortcodes): bool
