@@ -21,10 +21,7 @@ class ArticleRssFrontendController extends AbstractController
         #[Autowire('%oh_media_news.page_template%')]
         ?string $pageTemplate,
     ): Response {
-        $parent = $pageRawQuery->getPathWithShortcodeOrTemplate(
-            'news()',
-            $pageTemplate,
-        );
+        $parent = $pageRawQuery->getPathWithTemplate($pageTemplate);
 
         // News not active on the site
         if (!$parent) {

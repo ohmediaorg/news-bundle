@@ -49,10 +49,7 @@ class RecentArticlesExtension extends AbstractExtension
             $article->setTimezone($this->timezone);
         }
 
-        $pagePath = $this->pageRawQuery->getPathWithShortcodeOrTemplate(
-            'news()',
-            $this->pageTemplate,
-        );
+        $pagePath = $this->pageRawQuery->getPathWithTemplate($this->pageTemplate);
 
         return $twig->render('@OHMediaNews/recent_news.html.twig', [
             'articles' => $articles,

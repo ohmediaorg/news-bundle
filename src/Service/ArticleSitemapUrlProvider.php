@@ -19,10 +19,7 @@ class ArticleSitemapUrlProvider extends AbstractSitemapUrlProvider
 
     protected function buildSitemapUrls(): void
     {
-        $pagePath = $this->pageRawQuery->getPathWithShortcodeOrTemplate(
-            'news()',
-            $this->pageTemplate,
-        );
+        $pagePath = $this->pageRawQuery->getPathWithTemplate($this->pageTemplate);
 
         if (!$pagePath) {
             return;
