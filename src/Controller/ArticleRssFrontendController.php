@@ -7,6 +7,7 @@ use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\PageBundle\Service\PageRawQuery;
 use OHMedia\SettingsBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,8 +18,13 @@ class ArticleRssFrontendController extends AbstractController
         ArticleRepository $articleRepository,
         Settings $settings,
         PageRawQuery $pageRawQuery,
+        #[Autowire('%oh_media_news.page_template%')]
+        ?string $pageTemplate,
     ): Response {
-        $parent = $pageRawQuery->getPathWithShortcode('news()');
+        $parent = $pageRawQuery->getPathWithShortcodeOrTemplate(
+            'news()',
+            $pageTemplate,
+        );
 
         // News not active on the site
         if (!$parent) {

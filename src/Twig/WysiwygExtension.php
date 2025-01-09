@@ -40,6 +40,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags,
         private RequestStack $requestStack,
+        #[Autowire('%oh_media_news.page_template%')]
+        private ?string $pageTemplate,
     ) {
     }
 
@@ -57,10 +59,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
     {
         $pageRevision = $this->pageRenderer->getCurrentPageRevision();
 
-        $callable = $pageRevision->getTemplate().'::getTemplate';
-        $isTemplate = is_callable($callable)
-            ? '@OHMediaNews/news.html.twig' === call_user_func($callable)
-            : false;
+        $isTemplate = $pageRevision->isTemplate($this->pageTemplate);
+
         if (!$isTemplate && !$pageRevision->containsShortcode('news()')) {
             return;
         }
