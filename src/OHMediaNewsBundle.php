@@ -17,7 +17,8 @@ class OHMediaNewsBundle extends AbstractBundle
                     ->defaultTrue()
                 ->end()
                 ->scalarNode('page_template')
-                    ->defaultNull()
+                    ->isRequired()
+                    ->cannotBeEmpty()
                 ->end()
             ->end();
     }
