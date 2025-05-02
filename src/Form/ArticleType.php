@@ -43,6 +43,7 @@ class ArticleType extends AbstractType
         $builder->add('image', FileEntityType::class, [
             'image' => true,
             'data' => $article->getImage(),
+            'required' => false,
         ]);
 
         if ($this->enabledArticleTags) {
