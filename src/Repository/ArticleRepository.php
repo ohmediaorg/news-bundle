@@ -9,6 +9,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\TimezoneBundle\Util\DateTimeUtil;
+use OHMedia\WysiwygBundle\Repository\WysiwygRepositoryInterface;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,7 +17,7 @@ use OHMedia\TimezoneBundle\Util\DateTimeUtil;
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ArticleRepository extends ServiceEntityRepository
+class ArticleRepository extends ServiceEntityRepository implements WysiwygRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
