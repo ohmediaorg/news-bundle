@@ -37,7 +37,7 @@ class NewsExtension extends AbstractExtension
         private UrlGeneratorInterface $urlGenerator,
         private ArticleTagRepository $articleTagRepository,
         #[Autowire('%oh_media_news.article_tags%')]
-        private bool $enabledArticleTags,
+        private bool $articleTagsEnabled,
         private RequestStack $requestStack,
         #[Autowire('%oh_media_news.page_template%')]
         private ?string $pageTemplate,
@@ -116,7 +116,7 @@ class NewsExtension extends AbstractExtension
         $request = $this->requestStack->getCurrentRequest();
         $query = $request->query->all();
 
-        if ($this->enabledArticleTags) {
+        if ($this->articleTagsEnabled) {
             // accommodates multiple tags (ie. `tags[]=abc&tags[]=123`)
             $activeTags = isset($query['tags']) && is_array($query['tags']) ?
                 $query['tags'] :
@@ -143,7 +143,7 @@ class NewsExtension extends AbstractExtension
         array $activeTags,
         string $pagePath
     ): array {
-        if (!$this->enabledArticleTags) {
+        if (!$this->articleTagsEnabled) {
             return [];
         }
 
