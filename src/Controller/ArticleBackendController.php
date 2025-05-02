@@ -14,6 +14,7 @@ use OHMedia\UtilityBundle\Form\DeleteType;
 use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,9 @@ class ArticleBackendController extends AbstractController
     #[Route('/articles', name: 'article_index', methods: ['GET'])]
     public function index(
         ArticleRepository $articleRepository,
-        Paginator $paginator
+        Paginator $paginator,
+        #[Autowire('%oh_media_news.article_tags%')]
+        bool $articleTagsEnabled,
     ): Response {
         $newArticle = new Article();
         $newArticleTag = new ArticleTag();
@@ -50,6 +53,7 @@ class ArticleBackendController extends AbstractController
             'new_article' => $newArticle,
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
+            'article_tags_enabled' => $articleTagsEnabled,
         ]);
     }
 

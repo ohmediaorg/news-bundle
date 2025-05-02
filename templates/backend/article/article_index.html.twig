@@ -50,7 +50,9 @@
           <tr>
             <th>Title</th>
             <th>Author</th>
-            <th>Tags</th>
+            {% if article_tags_enabled %}
+              <th>Tags</th>
+            {% endif %}
             <th>Last Updated</th>
             <th></th>
           </tr>
@@ -70,11 +72,13 @@
               {% endif %}
             </td>
             <td>{{ article.author }}</td>
-            <td>
-              {% for tag in article.getTags %}
-                {{ bootstrap_badge_secondary(tag.name) }} <br>
-              {% endfor %}
-            </td>
+            {% if article_tags_enabled %}
+              <td>
+                {% for tag in article.getTags %}
+                  {{ bootstrap_badge_secondary(tag.name) }} <br>
+                {% endfor %}
+              </td>
+            {% endif %}
             <td>{{ article.getUpdatedAt|datetime }}</td>
             <td>
               {% if is_granted(attributes.edit, article) %}
