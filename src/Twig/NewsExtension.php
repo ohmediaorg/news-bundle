@@ -115,6 +115,7 @@ class NewsExtension extends AbstractExtension
         $tags = null;
         $request = $this->requestStack->getCurrentRequest();
         $query = $request->query->all();
+        $activeTags = [];
 
         if ($this->articleTagsEnabled) {
             // accommodates multiple tags (ie. `tags[]=abc&tags[]=123`)
