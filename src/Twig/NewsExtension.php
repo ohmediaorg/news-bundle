@@ -194,7 +194,10 @@ class NewsExtension extends AbstractExtension
                 $queryString = $tagQueryString;
             }
 
-            $href = $pagePath;
+            $href = $this->urlGenerator->generate(
+                'oh_media_page_frontend',
+                ['path' => $pagePath],
+            );
 
             if ($queryString) {
                 $href .= '?'.$queryString;
