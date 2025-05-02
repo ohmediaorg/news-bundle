@@ -64,8 +64,8 @@ class ArticleBackendController extends AbstractController
             'new_article' => $newArticle,
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
-            'article_tags_enabled' => $articleTagsEnabled,
             'search_form' => $searchForm,
+            'article_tags_enabled' => $articleTagsEnabled,
         ]);
     }
 
