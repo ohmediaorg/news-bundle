@@ -44,6 +44,21 @@
       </div>
     </div>
 
+    {{ form_start(search_form) }}
+      <div class="row align-items-end">
+        <div class="col-lg-4 col-sm-6">
+          {{ form_row(search_form.search) }}
+        </div>
+        <div class="col-lg-4 col-sm-6">
+          {{ form_row(search_form.status) }}
+        </div>
+        <div class="col-lg-12 col-sm-6">
+          <button class="btn btn-primary mb-3" type="submit">Search</button>
+          <a class="btn btn-dark mb-3" href="{{ path('article_index') }}">Reset</a>
+        </div>
+      </div>
+    {{ form_end(search_form) }}
+
     {% if article_count %}
       <table class="table table-striped">
         <thead>
