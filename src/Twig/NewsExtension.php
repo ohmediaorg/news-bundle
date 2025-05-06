@@ -12,7 +12,6 @@ use OHMedia\PageBundle\Event\DynamicPageEvent;
 use OHMedia\PageBundle\Service\PageRenderer;
 use OHMedia\SettingsBundle\Service\Settings;
 use OHMedia\TimezoneBundle\Util\DateTimeUtil;
-use OHMedia\WysiwygBundle\Twig\AbstractWysiwygExtension;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,12 +19,12 @@ use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 #[AsEventListener(event: DynamicPageEvent::class, method: 'onDynamicPageEvent')]
-class WysiwygExtension extends AbstractWysiwygExtension
+class NewsExtension extends AbstractExtension
 {
-    private bool $rendered = false;
     private ?Article $articleEntity = null;
 
     public function __construct(
@@ -40,6 +39,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
         #[Autowire('%oh_media_news.article_tags%')]
         private bool $enabledArticleTags,
         private RequestStack $requestStack,
+        #[Autowire('%oh_media_news.page_template%')]
+        private ?string $pageTemplate,
     ) {
     }
 
@@ -57,10 +58,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
     {
         $pageRevision = $this->pageRenderer->getCurrentPageRevision();
 
-        $callable = $pageRevision->getTemplate().'::getTemplate';
-        $isTemplate = is_callable($callable)
-            ? '@OHMediaNews/news.html.twig' === call_user_func($callable)
-            : false;
+        $isTemplate = $pageRevision->isTemplate($this->pageTemplate);
+
         if (!$isTemplate && !$pageRevision->containsShortcode('news()')) {
             return;
         }
@@ -96,15 +95,8 @@ class WysiwygExtension extends AbstractWysiwygExtension
         );
     }
 
-    public function news(
-        Environment $twig,
-    ): string {
-        if ($this->rendered) {
-            return '';
-        }
-
-        $this->rendered = true;
-
+    public function news(Environment $twig): string
+    {
         $pagePath = $this->pageRenderer->getCurrentPage()->getPath();
 
         if ($this->articleEntity) {

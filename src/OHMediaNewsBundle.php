@@ -16,6 +16,10 @@ class OHMediaNewsBundle extends AbstractBundle
                 ->booleanNode('article_tags')
                     ->defaultTrue()
                 ->end()
+                ->scalarNode('page_template')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
             ->end();
     }
 
@@ -28,6 +32,7 @@ class OHMediaNewsBundle extends AbstractBundle
 
         $containerConfigurator->parameters()
             ->set('oh_media_news.article_tags', $config['article_tags'])
+            ->set('oh_media_news.page_template', $config['page_template'])
         ;
     }
 }

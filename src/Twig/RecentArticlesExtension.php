@@ -5,8 +5,9 @@ namespace OHMedia\NewsBundle\Twig;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\PageBundle\Service\PageRawQuery;
 use OHMedia\TimezoneBundle\Service\Timezone;
-use Twig\Extension\AbstractExtension;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class RecentArticlesExtension extends AbstractExtension
@@ -17,6 +18,8 @@ class RecentArticlesExtension extends AbstractExtension
         private ArticleRepository $articleRepository,
         private PageRawQuery $pageRawQuery,
         Timezone $timezoneService,
+        #[Autowire('%oh_media_news.page_template%')]
+        private ?string $pageTemplate,
     ) {
         $this->timezone = new \DateTimeZone($timezoneService->get());
     }
@@ -46,7 +49,7 @@ class RecentArticlesExtension extends AbstractExtension
             $article->setTimezone($this->timezone);
         }
 
-        $pagePath = $this->pageRawQuery->getPathWithShortcode('news()');
+        $pagePath = $this->pageRawQuery->getPathWithTemplate($this->pageTemplate);
 
         return $twig->render('@OHMediaNews/recent_news.html.twig', [
             'articles' => $articles,
