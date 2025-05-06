@@ -27,7 +27,7 @@ class RSSExtension extends AbstractExtension
 
     public function rssLinkTag(): string
     {
-        $title = $this->settings->get(Article::SETTING_RSS_TITLE);
+        $title = (string) $this->settings->get(Article::SETTING_RSS_TITLE);
         $href = $this->urlGenerator->generate('news_rss');
 
         return sprintf(
