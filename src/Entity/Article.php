@@ -46,7 +46,6 @@ class Article implements SluggableEntityInterface
     private ?string $content = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
     private ?File $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -128,7 +127,7 @@ class Article implements SluggableEntityInterface
         return $this->image;
     }
 
-    public function setImage(File $image): static
+    public function setImage(?File $image): static
     {
         $this->image = $image;
 

@@ -37,7 +37,7 @@ class NewsExtension extends AbstractExtension
         private UrlGeneratorInterface $urlGenerator,
         private ArticleTagRepository $articleTagRepository,
         #[Autowire('%oh_media_news.article_tags%')]
-        private bool $enabledArticleTags,
+        private bool $articleTagsEnabled,
         private RequestStack $requestStack,
         #[Autowire('%oh_media_news.page_template%')]
         private ?string $pageTemplate,
@@ -115,72 +115,13 @@ class NewsExtension extends AbstractExtension
         $tags = null;
         $request = $this->requestStack->getCurrentRequest();
         $query = $request->query->all();
+        $activeTags = [];
 
-        $tagsArray = [];
-
-        if ($this->enabledArticleTags) {
-            $tags = $this->articleTagRepository->createQueryBuilder('at')
-                ->select('at')
-                ->innerJoin('at.articles', 'a')
-                ->where('a.published_at IS NOT NULL')
-                ->andWhere('a.published_at <= :now')
-                ->setParameter('now', DateTimeUtil::getDateTimeUtc())
-                ->getQuery()
-                ->getResult();
-
+        if ($this->articleTagsEnabled) {
             // accommodates multiple tags (ie. `tags[]=abc&tags[]=123`)
             $activeTags = isset($query['tags']) && is_array($query['tags']) ?
                 $query['tags'] :
                 [];
-
-            foreach ($tags as $tag) {
-                $slug = $tag->getSlug();
-
-                // making copies for modification
-                $thisQuery = $query;
-                $thisQueryTags = $activeTags;
-
-                $key = array_search($slug, $thisQueryTags);
-                $isActive = false !== $key;
-
-                // building the href for the tag link such that:
-                // a) clicking an active tag will make it not active on next page load
-                // b) clicking a non-active tag will make it active on next page load
-
-                if ($isActive) {
-                    array_splice($thisQueryTags, $key, 1);
-                } else {
-                    $thisQueryTags[] = $slug;
-                }
-
-                unset($thisQuery['tags']);
-                $queryString = http_build_query($thisQuery);
-                $tagQueryString = [];
-
-                foreach ($thisQueryTags as $slug) {
-                    $tagQueryString[] = 'tags[]='.urlencode($slug);
-                }
-
-                $tagQueryString = implode('&', $tagQueryString);
-
-                if ($queryString) {
-                    $queryString = $queryString.'&'.$tagQueryString;
-                } else {
-                    $queryString = $tagQueryString;
-                }
-
-                $href = $pagePath;
-
-                if ($queryString) {
-                    $href .= '?'.$queryString;
-                }
-
-                $tagsArray[] = [
-                    'href' => $href,
-                    'name' => $tag->getName(),
-                    'active' => $isActive,
-                ];
-            }
 
             if ($activeTags) {
                 $qb->innerJoin('a.tags', 't');
@@ -194,8 +135,83 @@ class NewsExtension extends AbstractExtension
         return $twig->render('@OHMediaNews/news_listing.html.twig', [
             'pagination' => $pagination,
             'news_page_path' => $pagePath,
-            'tags' => $tagsArray,
+            'tags' => $this->getTagsArray($query, $activeTags, $pagePath),
         ]);
+    }
+
+    private function getTagsArray(
+        array $query,
+        array $activeTags,
+        string $pagePath
+    ): array {
+        if (!$this->articleTagsEnabled) {
+            return [];
+        }
+
+        $tagsArray = [];
+
+        $tags = $this->articleTagRepository->createQueryBuilder('at')
+            ->select('at')
+            ->innerJoin('at.articles', 'a')
+            ->where('a.published_at IS NOT NULL')
+            ->andWhere('a.published_at <= :now')
+            ->setParameter('now', DateTimeUtil::getDateTimeUtc())
+            ->getQuery()
+            ->getResult();
+
+        foreach ($tags as $tag) {
+            $slug = $tag->getSlug();
+
+            // making copies for modification
+            $thisQuery = $query;
+            $thisQueryTags = $activeTags;
+
+            $key = array_search($slug, $thisQueryTags);
+            $isActive = false !== $key;
+
+            // building the href for the tag link such that:
+            // a) clicking an active tag will make it not active on next page load
+            // b) clicking a non-active tag will make it active on next page load
+
+            if ($isActive) {
+                array_splice($thisQueryTags, $key, 1);
+            } else {
+                $thisQueryTags[] = $slug;
+            }
+
+            unset($thisQuery['tags']);
+            $queryString = http_build_query($thisQuery);
+            $tagQueryString = [];
+
+            foreach ($thisQueryTags as $slug) {
+                $tagQueryString[] = 'tags[]='.urlencode($slug);
+            }
+
+            $tagQueryString = implode('&', $tagQueryString);
+
+            if ($queryString) {
+                $queryString = $queryString.'&'.$tagQueryString;
+            } else {
+                $queryString = $tagQueryString;
+            }
+
+            $href = $this->urlGenerator->generate(
+                'oh_media_page_frontend',
+                ['path' => $pagePath],
+            );
+
+            if ($queryString) {
+                $href .= '?'.$queryString;
+            }
+
+            $tagsArray[] = [
+                'href' => $href,
+                'name' => $tag->getName(),
+                'active' => $isActive,
+            ];
+        }
+
+        return $tagsArray;
     }
 
     private function getSchema(Article $article): string

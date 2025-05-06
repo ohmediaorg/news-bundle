@@ -2,6 +2,7 @@
 
 namespace OHMedia\NewsBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\Article;
@@ -10,11 +11,17 @@ use OHMedia\NewsBundle\Form\ArticleType;
 use OHMedia\NewsBundle\Repository\ArticleRepository;
 use OHMedia\NewsBundle\Security\Voter\ArticleTagVoter;
 use OHMedia\NewsBundle\Security\Voter\ArticleVoter;
+use OHMedia\TimezoneBundle\Util\DateTimeUtil;
 use OHMedia\UtilityBundle\Form\DeleteType;
 use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +37,10 @@ class ArticleBackendController extends AbstractController
     #[Route('/articles', name: 'article_index', methods: ['GET'])]
     public function index(
         ArticleRepository $articleRepository,
-        Paginator $paginator
+        Paginator $paginator,
+        Request $request,
+        #[Autowire('%oh_media_news.article_tags%')]
+        bool $articleTagsEnabled,
     ): Response {
         $newArticle = new Article();
         $newArticleTag = new ArticleTag();
@@ -45,12 +55,85 @@ class ArticleBackendController extends AbstractController
         $qb->orderBy('CASE WHEN a.published_at IS NULL THEN 0 ELSE 1 END', 'ASC')
             ->addOrderBy('a.published_at', 'DESC');
 
+        $searchForm = $this->getSearchForm($request);
+
+        $this->applySearch($searchForm, $qb);
+
         return $this->render('@OHMediaNews/backend/article/article_index.html.twig', [
             'pagination' => $paginator->paginate($qb, 20),
             'new_article' => $newArticle,
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
+            'search_form' => $searchForm,
+            'article_tags_enabled' => $articleTagsEnabled,
         ]);
+    }
+
+    private function getSearchForm(Request $request): FormInterface
+    {
+        $formBuilder = $this->container->get('form.factory')
+            ->createNamedBuilder('', FormType::class, null, [
+                'csrf_protection' => false,
+            ]);
+
+        $formBuilder->setMethod('GET');
+
+        $formBuilder->add('search', TextType::class, [
+            'required' => false,
+        ]);
+
+        $formBuilder->add('status', ChoiceType::class, [
+            'required' => false,
+            'choices' => [
+                'All' => '',
+                'Published' => 'published',
+                'Scheduled' => 'scheduled',
+                'Draft' => 'draft',
+            ],
+        ]);
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        return $form;
+    }
+
+    private function applySearch(FormInterface $form, QueryBuilder $qb): void
+    {
+        $search = $form->get('search')->getData();
+
+        if ($search) {
+            $searchFields = [
+                'a.title',
+                'a.slug',
+                'a.author',
+                'a.snippet',
+                'a.content',
+            ];
+
+            $searchLikes = [];
+            foreach ($searchFields as $searchField) {
+                $searchLikes[] = "$searchField LIKE :search";
+            }
+
+            $qb->andWhere('('.implode(' OR ', $searchLikes).')')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $status = $form->get('status')->getData();
+
+        if ('published' === $status) {
+            $qb->andWhere('a.published_at IS NOT NULL');
+            $qb->andWhere('a.published_at <= :now');
+            $qb->setParameter('now', DateTimeUtil::getDateTimeUtc());
+        } elseif ('scheduled' === $status) {
+            $qb->andWhere('a.published_at IS NOT NULL');
+            $qb->andWhere('a.published_at > :now');
+            $qb->setParameter('now', DateTimeUtil::getDateTimeUtc());
+        } elseif ('draft' === $status) {
+            $qb->andWhere('a.published_at IS NULL');
+        }
     }
 
     #[Route('/article/create', name: 'article_create', methods: ['GET', 'POST'])]

@@ -17,7 +17,7 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     public function __construct(
         #[Autowire('%oh_media_news.article_tags%')]
-        private bool $enabledArticleTags
+        private bool $articleTagsEnabled
     ) {
     }
 
@@ -39,26 +39,26 @@ class ArticleTagVoter extends AbstractEntityVoter
 
     protected function canIndex(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags;
+        return $this->articleTagsEnabled;
     }
 
     protected function canCreate(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags;
+        return $this->articleTagsEnabled;
     }
 
     protected function canView(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags;
+        return $this->articleTagsEnabled;
     }
 
     protected function canEdit(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags;
+        return $this->articleTagsEnabled;
     }
 
     protected function canDelete(ArticleTag $articleTag, User $loggedIn): bool
     {
-        return $this->enabledArticleTags;
+        return $this->articleTagsEnabled;
     }
 }

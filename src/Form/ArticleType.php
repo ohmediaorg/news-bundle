@@ -18,7 +18,7 @@ class ArticleType extends AbstractType
 {
     public function __construct(
         #[Autowire('%oh_media_news.article_tags%')]
-        private bool $enabledArticleTags,
+        private bool $articleTagsEnabled,
     ) {
     }
 
@@ -43,9 +43,10 @@ class ArticleType extends AbstractType
         $builder->add('image', FileEntityType::class, [
             'image' => true,
             'data' => $article->getImage(),
+            'required' => false,
         ]);
 
-        if ($this->enabledArticleTags) {
+        if ($this->articleTagsEnabled) {
             $builder->add('tags', EntityType::class, [
                 'required' => false,
                 'class' => ArticleTag::class,
