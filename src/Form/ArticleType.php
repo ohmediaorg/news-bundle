@@ -24,8 +24,6 @@ class ArticleType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $article = $options['data'];
-
         $builder->add('title');
 
         $builder->add('author', null, [
@@ -42,7 +40,6 @@ class ArticleType extends AbstractType
 
         $builder->add('image', FileEntityType::class, [
             'image' => true,
-            'data' => $article->getImage(),
             'required' => false,
         ]);
 
