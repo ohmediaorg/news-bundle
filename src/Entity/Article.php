@@ -46,6 +46,7 @@ class Article implements SluggableEntityInterface
     private ?string $content = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
     private ?File $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
