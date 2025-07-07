@@ -148,6 +148,11 @@ class NewsExtension extends AbstractExtension
             return [];
         }
 
+        $pageHref = $this->urlGenerator->generate(
+            'oh_media_page_frontend',
+            ['path' => $pagePath],
+        );
+
         $tagsArray = [];
 
         $tags = $this->articleTagRepository->createQueryBuilder('at')
@@ -195,10 +200,7 @@ class NewsExtension extends AbstractExtension
                 $queryString = $tagQueryString;
             }
 
-            $href = $this->urlGenerator->generate(
-                'oh_media_page_frontend',
-                ['path' => $pagePath],
-            );
+            $href = $pageHref;
 
             if ($queryString) {
                 $href .= '?'.$queryString;
@@ -209,6 +211,14 @@ class NewsExtension extends AbstractExtension
                 'name' => $tag->getName(),
                 'active' => $isActive,
             ];
+        }
+
+        if ($tagsArray) {
+            array_unshift($tagsArray, [
+                'href' => $pageHref,
+                'name' => 'All',
+                'active' => empty($activeTags),
+            ]);
         }
 
         return $tagsArray;
