@@ -32,9 +32,11 @@ class Article implements SluggableEntityInterface
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
+    #[Assert\Length(max: 100)]
     private ?string $title = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
     private ?string $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
