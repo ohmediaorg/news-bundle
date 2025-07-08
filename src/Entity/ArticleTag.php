@@ -27,6 +27,7 @@ class ArticleTag implements SluggableEntityInterface
 
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
+    #[Assert\Length(max: 100)]
     private ?string $name = null;
 
     /**
