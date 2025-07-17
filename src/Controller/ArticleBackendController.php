@@ -151,7 +151,7 @@ class ArticleBackendController extends AbstractController
 
         $form = $this->createForm(ArticleType::class, $article);
 
-        $form->add('submit', SubmitType::class);
+        $form->add('save', SubmitType::class);
 
         $form->handleRequest($request);
 
@@ -189,7 +189,7 @@ class ArticleBackendController extends AbstractController
 
         $form = $this->createForm(ArticleType::class, $article);
 
-        $form->add('submit', SubmitType::class);
+        $form->add('save', SubmitType::class);
 
         $form->handleRequest($request);
 

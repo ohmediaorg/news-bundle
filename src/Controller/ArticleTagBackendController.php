@@ -73,7 +73,7 @@ class ArticleTagBackendController extends AbstractController
 
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
-        $form->add('submit', SubmitType::class);
+        $form->add('save', SubmitType::class);
 
         $form->handleRequest($request);
 
@@ -111,7 +111,7 @@ class ArticleTagBackendController extends AbstractController
 
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
-        $form->add('submit', SubmitType::class);
+        $form->add('save', SubmitType::class);
 
         $form->handleRequest($request);
 
