@@ -18,18 +18,15 @@ oh_media_news:
     resource: '@OHMediaNewsBundle/config/routes.yaml'
 ```
 
-Create the following config file, enable/disable tags based on site requirements. `config/packages/oh_media_news.yaml`:
+Create `config/packages/oh_media_news.yaml`, enable/disable tags based on site requirements:
+
 ```yaml
 oh_media_news:
   article_tags: true
+  page_template: App\Form\Page\NewsPage
 ```
 
 Run `php bin/console make:migration` then run the subsequent migration.
-
-# Integration
-
-The `news-bundle` is expected to integrate with the `page-bundle` via placing
-the `news()` shortcodes inside a page's WYSIWYG content.
 
 ## Listing Template
 
@@ -73,8 +70,8 @@ two variables: `article` and `news_page_path`. Here is a basic implementation:
 
 <a href="{{ page_path(news_page_path) }}">View All</a>
 ```
-## Recent News   
-   
+## Recent News
+
 The recent news can be implemented by inserting the `recent_articles()` tag within a template and creating
 `templates/OHMediaNewsBundle/recent_news.html.twig`. This template is passed
 two variables: `articles` and `news_page_path`. Here is a basic implementation:
