@@ -49,6 +49,9 @@ class ArticleType extends AbstractType
                 'class' => ArticleTag::class,
                 'multiple' => true,
                 'expanded' => true,
+                'row_attr' => [
+                    'class' => 'fieldset-nostyle mb-3',
+                ],
             ]);
         }
 

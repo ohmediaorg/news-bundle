@@ -15,8 +15,6 @@
 {% set can_view_article_tag = is_granted(attributes.view_tags, new_article_tag) %}
 {% set view_article_tags_href = path('article_tag_index') %}
 
-
-
 {% block actions %}
 <div class="btn-group btn-group-sm">
   {% if can_create_article %}
