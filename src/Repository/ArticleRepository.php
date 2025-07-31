@@ -3,8 +3,6 @@
 namespace OHMedia\NewsBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use OHMedia\NewsBundle\Entity\Article;
@@ -51,21 +49,25 @@ class ArticleRepository extends ServiceEntityRepository implements WysiwygReposi
             ->orderBy('a.published_at', 'DESC');
     }
 
-    public function containsWysiwygShortcodes(string ...$shortcodes): bool
+    public function getShortcodeQueryBuilder(string $shortcode): QueryBuilder
     {
-        $ors = [];
-        $params = new ArrayCollection();
-
-        foreach ($shortcodes as $i => $shortcode) {
-            $ors[] = 'a.content LIKE :shortcode_'.$i;
-            $params[] = new Parameter('shortcode_'.$i, '%'.$shortcode.'%');
-        }
-
         return $this->createQueryBuilder('a')
-            ->select('COUNT(a)')
-            ->where(implode(' OR ', $ors))
-            ->setParameters($params)
-            ->getQuery()
-            ->getSingleScalarResult() > 0;
+            ->where('a.content LIKE :shortcode')
+            ->setParameter('shortcode', '%'.$shortcode.'%');
+    }
+
+    public function getEntityRoute(): string
+    {
+        return 'article_edit';
+    }
+
+    public function getEntityRouteParams(mixed $entity): array
+    {
+        return ['id' => $entity->getId()];
+    }
+
+    public function getEntityName(): string
+    {
+        return 'Article';
     }
 }
