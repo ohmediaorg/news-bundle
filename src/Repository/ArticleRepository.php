@@ -56,18 +56,27 @@ class ArticleRepository extends ServiceEntityRepository implements WysiwygReposi
             ->setParameter('shortcode', '%'.$shortcode.'%');
     }
 
-    public function getEntityRoute(): string
+    public function getShortcodeRoute(): string
     {
         return 'article_edit';
     }
 
-    public function getEntityRouteParams(mixed $entity): array
+    public function getShortcodeRouteParams(mixed $entity): array
     {
         return ['id' => $entity->getId()];
     }
 
-    public function getEntityName(): string
+    public function getShortcodeHeading(): string
     {
-        return 'Article';
+        return 'Articles';
+    }
+
+    public function getShortcodeLinkText(mixed $entity): string
+    {
+        return sprintf(
+            '%s (ID:%s)',
+            (string) $entity,
+            $entity->getId(),
+        );
     }
 }
