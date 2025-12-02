@@ -3,10 +3,10 @@
 {% block meta_title %}Articles{% endblock %}
 
 {% block breadcrumbs %}
-{{ bootstrap_breadcrumbs(
-  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
-  bootstrap_breadcrumb('Articles', 'article_index'),
-) }}
+  {{ bootstrap_breadcrumbs(
+    bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
+    bootstrap_breadcrumb('Articles', 'article_index'),
+  ) }}
 {% endblock %}
 
 {% set can_create_article = is_granted(attributes.create, new_article) %}
@@ -16,111 +16,110 @@
 {% set view_article_tags_href = path('article_tag_index') %}
 
 {% block actions %}
-<div class="btn-group btn-group-sm">
   {% if can_create_article %}
     <a href="{{ create_article_href }}" class="btn btn-primary">
       {{ bootstrap_icon('plus-lg') }} Add Article
     </a>
   {% endif %}
+
   {% if can_view_article_tag %}
     <a href="{{ view_article_tags_href }}" class="btn btn-primary">
       {{ bootstrap_icon('tags') }} Tags
     </a>
   {% endif %}
-</div>
 {% endblock %}
 
 {% block main %}
-{% set article_count = pagination.count %}
+  {% set article_count = pagination.count %}
 
-<div class="card">
-  <div class="card-body">
-    <div class="card-title card-title-with-count">
-      <h1 class="card-title-heading">Articles</h1>
-      <div class="card-title-count">
-        {{ bootstrap_badge_primary(article_count) }}
-      </div>
-    </div>
-
-    {{ form_start(search_form) }}
-      <div class="row align-items-end">
-        <div class="col-lg-4 col-sm-6">
-          {{ form_row(search_form.search) }}
-        </div>
-        <div class="col-lg-4 col-sm-6">
-          {{ form_row(search_form.status) }}
-        </div>
-        <div class="col-lg-12 col-sm-6">
-          <button class="btn btn-outline-dark mb-3" type="submit">Search</button>
-          <a class="btn btn-secondary mb-3" href="{{ path('article_index') }}">Reset</a>
+  <div class="card">
+    <div class="card-body">
+      <div class="card-title card-title-with-count">
+        <h1 class="card-title-heading">Articles</h1>
+        <div class="card-title-count">
+          {{ bootstrap_badge_primary(article_count) }}
         </div>
       </div>
-    {{ form_end(search_form) }}
 
-    {% if article_count %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            {% if article_tags_enabled %}
-              <th>Tags</th>
-            {% endif %}
-            <th>Last Updated</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for article in pagination.results %}
-          <tr>
-            <td>
-              {{ article }}
-              <br>
-              {% if article.isPublished %}
-                {{ bootstrap_badge_success('Published') }}
-              {% elseif article.isScheduled %}
-                {{ bootstrap_badge_secondary('Scheduled') }}
-              {% else %}
-                {{ bootstrap_badge_warning('Draft')}}
+      {{ form_start(search_form) }}
+        <div class="row align-items-end">
+          <div class="col-lg-4 col-sm-6">
+            {{ form_row(search_form.search) }}
+          </div>
+          <div class="col-lg-4 col-sm-6">
+            {{ form_row(search_form.status) }}
+          </div>
+          <div class="col-lg-12 col-sm-6">
+            <button class="btn btn-outline-dark mb-3" type="submit">Search</button>
+            <a class="btn btn-secondary mb-3" href="{{ path('article_index') }}">Reset</a>
+          </div>
+        </div>
+      {{ form_end(search_form) }}
+
+      {% if article_count %}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              {% if article_tags_enabled %}
+                <th>Tags</th>
               {% endif %}
-            </td>
-            <td>{{ article.author }}</td>
-            {% if article_tags_enabled %}
+              <th>Last Updated</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for article in pagination.results %}
+            <tr>
               <td>
-                {% for tag in article.getTags %}
-                  {{ bootstrap_badge_secondary(tag.name) }} <br>
-                {% endfor %}
+                {{ article }}
+                <br>
+                {% if article.isPublished %}
+                  {{ bootstrap_badge_success('Published') }}
+                {% elseif article.isScheduled %}
+                  {{ bootstrap_badge_secondary('Scheduled') }}
+                {% else %}
+                  {{ bootstrap_badge_warning('Draft')}}
+                {% endif %}
               </td>
-            {% endif %}
-            <td>{{ article.getUpdatedAt|datetime }}</td>
-            <td>
-              {% if is_granted(attributes.edit, article) %}
-              <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_edit', {id: article.id}) }}" title="Edit">
-                {{ bootstrap_icon('pencil') }}
-                <span class="visually-hidden">Edit</span>
-              </a>
+              <td>{{ article.author }}</td>
+              {% if article_tags_enabled %}
+                <td>
+                  {% for tag in article.getTags %}
+                    {{ bootstrap_badge_secondary(tag.name) }} <br>
+                  {% endfor %}
+                </td>
               {% endif %}
-              {% if is_granted(attributes.delete, article) %}
-              <a class="btn btn-sm btn-danger btn-action" href="{{ path('article_delete', {id: article.id}) }}" title="Delete" data-confirm="Are you sure you want to delete this article? Clicking OK will take you to a verification step to delete this entry.">
-                {{ bootstrap_icon('trash') }}
-                <span class="visually-hidden">Delete</span>
-              </a>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+              <td>{{ article.getUpdatedAt|datetime }}</td>
+              <td>
+                {% if is_granted(attributes.edit, article) %}
+                <a class="btn btn-sm btn-primary btn-action" href="{{ path('article_edit', {id: article.id}) }}" title="Edit">
+                  {{ bootstrap_icon('pencil') }}
+                  <span class="visually-hidden">Edit</span>
+                </a>
+                {% endif %}
+                {% if is_granted(attributes.delete, article) %}
+                <a class="btn btn-sm btn-danger btn-action" href="{{ path('article_delete', {id: article.id}) }}" title="Delete" data-confirm="Are you sure you want to delete this article? Clicking OK will take you to a verification step to delete this entry.">
+                  {{ bootstrap_icon('trash') }}
+                  <span class="visually-hidden">Delete</span>
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-      {{ bootstrap_pagination(pagination) }}
+        {{ bootstrap_pagination(pagination) }}
 
-      <small>{{ bootstrap_pagination_info(pagination) }}</small>
-    {% else %}
-      <p>No articles found.</p>
-      {% if can_create_article %}
-        <a href="{{ create_article_href }}">Click here to add an article.</a>
+        <small>{{ bootstrap_pagination_info(pagination) }}</small>
+      {% else %}
+        <p>No articles found.</p>
+        {% if can_create_article %}
+          <a href="{{ create_article_href }}">Click here to add an article.</a>
+        {% endif %}
       {% endif %}
-    {% endif %}
+    </div>
   </div>
-</div>
 {% endblock %}
