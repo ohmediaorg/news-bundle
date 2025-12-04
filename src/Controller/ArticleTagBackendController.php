@@ -4,7 +4,6 @@ namespace OHMedia\NewsBundle\Controller;
 
 use OHMedia\BackendBundle\Form\MultiSaveType;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
-use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleTagType;
@@ -29,10 +28,8 @@ class ArticleTagBackendController extends AbstractController
     }
 
     #[Route('/articles/tags', name: 'article_tag_index', methods: ['GET'])]
-    public function index(
-        ArticleTagRepository $articleTagRepository,
-        Paginator $paginator
-    ): Response {
+    public function index(ArticleTagRepository $articleTagRepository): Response
+    {
         $newArticleTag = new ArticleTag();
 
         $this->denyAccessUnlessGranted(
@@ -54,7 +51,7 @@ class ArticleTagBackendController extends AbstractController
         $qb->orderBy('at.id', 'desc');
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_index.html.twig', [
-            'pagination' => $paginator->paginate($qb, 20),
+            'results' => $qb->getQuery()->getResult(),
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
         ]);
