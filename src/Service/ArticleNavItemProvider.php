@@ -20,7 +20,7 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
 
         if ($this->isGranted(ArticleVoter::INDEX, new Article())) {
             $articles = new NavLink('Articles', 'article_index');
-            $articles->setIcon('newspaper');
+            $articles->setIcon('file-text');
 
             $nav->addLink($articles);
         }
