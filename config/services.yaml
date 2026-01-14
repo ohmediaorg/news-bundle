@@ -3,7 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-
     OHMedia\NewsBundle\:
         resource: '../src/'
         exclude:
