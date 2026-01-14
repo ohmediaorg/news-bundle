@@ -20,21 +20,21 @@ class ArticleNavItemProvider extends AbstractNavItemProvider
 
         if ($this->isGranted(ArticleVoter::INDEX, new Article())) {
             $articles = new NavLink('Articles', 'article_index');
-            $articles->setIcon('newspaper');
+            $articles->setIcon('file-text');
 
             $nav->addLink($articles);
         }
 
         if ($this->isGranted(ArticleTagVoter::INDEX, new ArticleTag())) {
             $tags = new NavLink('Tags', 'article_tag_index');
-            $tags->setIcon('tag');
+            $tags->setIcon('tags');
 
             $nav->addLink($tags);
         }
 
         if ($this->isGranted(ArticleVoter::SETTINGS, new Article())) {
             $settings = new NavLink('Settings', 'article_rss_settings');
-            $settings->setIcon('gear-fill');
+            $settings->setIcon('gear');
 
             $nav->addLink($settings);
         }

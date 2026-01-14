@@ -2,8 +2,8 @@
 
 namespace OHMedia\NewsBundle\Controller;
 
+use OHMedia\BackendBundle\Form\MultiSaveType;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
-use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
 use OHMedia\NewsBundle\Form\ArticleTagType;
@@ -14,6 +14,7 @@ use OHMedia\UtilityBundle\Service\EntitySlugger;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,10 +28,8 @@ class ArticleTagBackendController extends AbstractController
     }
 
     #[Route('/articles/tags', name: 'article_tag_index', methods: ['GET'])]
-    public function index(
-        ArticleTagRepository $articleTagRepository,
-        Paginator $paginator
-    ): Response {
+    public function index(ArticleTagRepository $articleTagRepository): Response
+    {
         $newArticleTag = new ArticleTag();
 
         $this->denyAccessUnlessGranted(
@@ -52,7 +51,7 @@ class ArticleTagBackendController extends AbstractController
         $qb->orderBy('at.id', 'desc');
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_index.html.twig', [
-            'pagination' => $paginator->paginate($qb, 20),
+            'results' => $qb->getQuery()->getResult(),
             'new_article_tag' => $newArticleTag,
             'attributes' => $this->getAttributes(),
         ]);
@@ -73,7 +72,7 @@ class ArticleTagBackendController extends AbstractController
 
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
-        $form->add('save', SubmitType::class);
+        $form->add('save', MultiSaveType::class);
 
         $form->handleRequest($request);
 
@@ -85,7 +84,7 @@ class ArticleTagBackendController extends AbstractController
 
                 $this->addFlash('notice', 'The article tag was created successfully.');
 
-                return $this->redirectToRoute('article_tag_index');
+                return $this->redirectForm($articleTag, $form);
             }
 
             $this->addFlash('error', 'There are some errors in the form below.');
@@ -111,7 +110,7 @@ class ArticleTagBackendController extends AbstractController
 
         $form = $this->createForm(ArticleTagType::class, $articleTag);
 
-        $form->add('save', SubmitType::class);
+        $form->add('save', MultiSaveType::class);
 
         $form->handleRequest($request);
 
@@ -123,9 +122,7 @@ class ArticleTagBackendController extends AbstractController
 
                 $this->addFlash('notice', 'The article tag was updated successfully.');
 
-                return $this->redirectToRoute('article_tag_index', [
-                    'id' => $articleTag->getId(),
-                ]);
+                return $this->redirectForm($articleTag, $form);
             }
 
             $this->addFlash('error', 'There are some errors in the form below.');
@@ -135,6 +132,21 @@ class ArticleTagBackendController extends AbstractController
             'form' => $form->createView(),
             'article_tag' => $articleTag,
         ]);
+    }
+
+    private function redirectForm(ArticleTag $articleTag, FormInterface $form): Response
+    {
+        $clickedButtonName = $form->getClickedButton()->getName() ?? null;
+
+        if ('keep_editing' === $clickedButtonName) {
+            return $this->redirectToRoute('article_tag_edit', [
+                'id' => $articleTag->getId(),
+            ]);
+        } elseif ('add_another' === $clickedButtonName) {
+            return $this->redirectToRoute('article_tag_create');
+        } else {
+            return $this->redirectToRoute('article_tag_index');
+        }
     }
 
     #[Route('/articles/tag/{id}/delete', name: 'article_tag_delete', methods: ['GET', 'POST'])]

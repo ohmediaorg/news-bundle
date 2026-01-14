@@ -3,6 +3,7 @@
 namespace OHMedia\NewsBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use OHMedia\BackendBundle\Form\MultiSaveType;
 use OHMedia\BackendBundle\Routing\Attribute\Admin;
 use OHMedia\BootstrapBundle\Service\Paginator;
 use OHMedia\NewsBundle\Entity\Article;
@@ -19,8 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,8 +79,9 @@ class ArticleBackendController extends AbstractController
 
         $formBuilder->setMethod('GET');
 
-        $formBuilder->add('search', TextType::class, [
+        $formBuilder->add('search', SearchType::class, [
             'required' => false,
+            'label' => 'Title, author, snippet, content',
         ]);
 
         $formBuilder->add('status', ChoiceType::class, [
@@ -151,7 +153,7 @@ class ArticleBackendController extends AbstractController
 
         $form = $this->createForm(ArticleType::class, $article);
 
-        $form->add('save', SubmitType::class);
+        $form->add('save', MultiSaveType::class);
 
         $form->handleRequest($request);
 
@@ -163,7 +165,7 @@ class ArticleBackendController extends AbstractController
 
                 $this->addFlash('notice', 'The article was created successfully.');
 
-                return $this->redirectToRoute('article_index');
+                return $this->redirectForm($article, $form);
             }
 
             $this->addFlash('error', 'There are some errors in the form below.');
@@ -189,7 +191,7 @@ class ArticleBackendController extends AbstractController
 
         $form = $this->createForm(ArticleType::class, $article);
 
-        $form->add('save', SubmitType::class);
+        $form->add('save', MultiSaveType::class);
 
         $form->handleRequest($request);
 
@@ -201,9 +203,7 @@ class ArticleBackendController extends AbstractController
 
                 $this->addFlash('notice', 'The article was updated successfully.');
 
-                return $this->redirectToRoute('article_index', [
-                    'id' => $article->getId(),
-                ]);
+                return $this->redirectForm($article, $form);
             }
 
             $this->addFlash('error', 'There are some errors in the form below.');
@@ -213,6 +213,21 @@ class ArticleBackendController extends AbstractController
             'form' => $form->createView(),
             'article' => $article,
         ]);
+    }
+
+    private function redirectForm(Article $article, FormInterface $form): Response
+    {
+        $clickedButtonName = $form->getClickedButton()->getName() ?? null;
+
+        if ('keep_editing' === $clickedButtonName) {
+            return $this->redirectToRoute('article_edit', [
+                'id' => $article->getId(),
+            ]);
+        } elseif ('add_another' === $clickedButtonName) {
+            return $this->redirectToRoute('article_create');
+        } else {
+            return $this->redirectToRoute('article_index');
+        }
     }
 
     #[Route('/article/{id}/delete', name: 'article_delete', methods: ['GET', 'POST'])]

@@ -3,10 +3,10 @@
 {% set form_title = 'Create Tag' %}
 
 {% block breadcrumbs %}
-{{ bootstrap_breadcrumbs(
-  bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
-  bootstrap_breadcrumb('Articles', 'article_index'),
-  bootstrap_breadcrumb('Tags', 'article_tag_index'),
-  bootstrap_breadcrumb('Create'),
-) }}
+  {{ bootstrap_breadcrumbs(
+    bootstrap_breadcrumb(bootstrap_icon('newspaper') ~ ' News'),
+    bootstrap_breadcrumb('Articles', 'article_index'),
+    bootstrap_breadcrumb('Tags', 'article_tag_index'),
+    bootstrap_breadcrumb('Create'),
+  ) }}
 {% endblock %}
