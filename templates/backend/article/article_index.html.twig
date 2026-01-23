@@ -120,9 +120,9 @@
       {% if article.isPublished %}
         {{ bootstrap_badge_success('Published') }}
       {% elseif article.isScheduled %}
-        {{ bootstrap_badge_secondary('Scheduled') }}
+        {{ bootstrap_badge_warning('Scheduled') }}
       {% else %}
-        {{ bootstrap_badge_warning('Draft')}}
+        {{ bootstrap_badge_secondary('Draft')}}
       {% endif %}
     </td>
     <td>{{ article.author }}</td>
