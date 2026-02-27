@@ -161,6 +161,7 @@ class NewsExtension extends AbstractExtension
             ->where('a.published_at IS NOT NULL')
             ->andWhere('a.published_at <= :now')
             ->setParameter('now', DateTimeUtil::getDateTimeUtc())
+            ->orderBy('at.name')
             ->getQuery()
             ->getResult();
 

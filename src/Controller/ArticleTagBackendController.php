@@ -48,7 +48,7 @@ class ArticleTagBackendController extends AbstractController
             ) AS article_count')
         ;
 
-        $qb->orderBy('at.id', 'desc');
+        $qb->orderBy('at.name', 'asc');
 
         return $this->render('@OHMediaNews/backend/article_tag/article_tag_index.html.twig', [
             'results' => $qb->getQuery()->getResult(),

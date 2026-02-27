@@ -2,6 +2,8 @@
 
 namespace OHMedia\NewsBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use OHMedia\FileBundle\Form\Type\FileEntityType;
 use OHMedia\NewsBundle\Entity\Article;
 use OHMedia\NewsBundle\Entity\ArticleTag;
@@ -47,6 +49,10 @@ class ArticleType extends AbstractType
             $builder->add('tags', EntityType::class, [
                 'required' => false,
                 'class' => ArticleTag::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('t')
+                        ->orderBy('t.name', 'ASC');
+                },
                 'multiple' => true,
                 'expanded' => true,
                 'row_attr' => [
