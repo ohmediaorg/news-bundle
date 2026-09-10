@@ -53,8 +53,8 @@ class ArticleBackendController extends AbstractController
         );
 
         $qb = $articleRepository->createQueryBuilder('a');
-        $qb->orderBy('CASE WHEN a.published_at IS NULL THEN 0 ELSE 1 END', 'ASC')
-            ->addOrderBy('a.published_at', 'DESC');
+        $qb->orderBy('CASE WHEN a.published_at IS NULL THEN 0 ELSE 1 END', \SortDirection::Ascending)
+            ->addOrderBy('a.published_at', \SortDirection::Descending);
 
         $searchForm = $this->getSearchForm($request);
 
@@ -141,7 +141,7 @@ class ArticleBackendController extends AbstractController
     #[Route('/article/create', name: 'article_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
     ): Response {
         $article = new Article();
 
@@ -181,7 +181,7 @@ class ArticleBackendController extends AbstractController
     public function edit(
         Request $request,
         #[MapEntity(id: 'id')] Article $article,
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
     ): Response {
         $this->denyAccessUnlessGranted(
             ArticleVoter::EDIT,
@@ -225,16 +225,16 @@ class ArticleBackendController extends AbstractController
             ]);
         } elseif ('add_another' === $clickedButtonName) {
             return $this->redirectToRoute('article_create');
-        } else {
-            return $this->redirectToRoute('article_index');
         }
+
+        return $this->redirectToRoute('article_index');
     }
 
     #[Route('/article/{id}/delete', name: 'article_delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
         #[MapEntity(id: 'id')] Article $article,
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
     ): Response {
         $this->denyAccessUnlessGranted(
             ArticleVoter::DELETE,

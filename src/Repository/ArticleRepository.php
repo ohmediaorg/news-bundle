@@ -46,7 +46,7 @@ class ArticleRepository extends ServiceEntityRepository implements WysiwygReposi
             ->andWhere('a.published_at IS NOT NULL')
             ->andWhere('a.published_at <= :now')
             ->setParameter('now', DateTimeUtil::getDateTimeUtc())
-            ->orderBy('a.published_at', 'DESC');
+            ->orderBy('a.published_at', \SortDirection::Descending);
     }
 
     public function getShortcodeQueryBuilder(string $shortcode): QueryBuilder

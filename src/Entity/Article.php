@@ -58,7 +58,7 @@ class Article implements SluggableEntityInterface
      * @var Collection<int, ArticleTag>
      */
     #[ORM\ManyToMany(targetEntity: ArticleTag::class, inversedBy: 'articles')]
-    #[ORM\OrderBy(['name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => \SortDirection::Ascending])]
     private Collection $tags;
 
     private ?\DateTimeZone $timezone = null;

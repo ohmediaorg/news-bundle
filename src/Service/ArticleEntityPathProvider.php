@@ -37,7 +37,7 @@ class ArticleEntityPathProvider extends AbstractEntityPathProvider
         $qb = $this->articleRepository->createQueryBuilder('a')
             ->where('(a.published_at IS NOT NULL AND a.published_at <= :now)')
             ->setParameter('now', DateTimeUtil::getDateTimeUtc())
-            ->orderBy('a.published_at', 'DESC');
+            ->orderBy('a.published_at', \SortDirection::Descending);
 
         if ($selectedEntityId) {
             $qb->orWhere('a.id = :id')
