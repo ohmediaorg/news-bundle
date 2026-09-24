@@ -165,6 +165,9 @@ class NewsExtension extends AbstractExtension
             ->getQuery()
             ->getResult();
 
+        // clicking a tag should reset to page 1
+        unset($query['p']);
+
         foreach ($tags as $tag) {
             $slug = $tag->getSlug();
 
