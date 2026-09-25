@@ -11,8 +11,6 @@ use Twig\TwigFunction;
 
 class RecentArticlesExtension extends AbstractExtension
 {
-    private $timezone;
-
     public function __construct(
         private ArticleRepository $articleRepository,
         private PageRawQuery $pageRawQuery,

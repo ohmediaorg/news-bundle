@@ -61,8 +61,6 @@ class Article implements SluggableEntityInterface
     #[ORM\OrderBy(['name' => \SortDirection::Ascending])]
     private Collection $tags;
 
-    private ?\DateTimeZone $timezone = null;
-
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -195,17 +193,5 @@ class Article implements SluggableEntityInterface
     public function isScheduled(): bool
     {
         return !$this->isDraft() && DateTimeUtil::isFuture($this->published_at);
-    }
-
-    public function getTimezone(): ?\DateTimeZone
-    {
-        return $this->timezone;
-    }
-
-    public function setTimezone(?\DateTimeZone $timezone): static
-    {
-        $this->timezone = $timezone;
-
-        return $this;
     }
 }
